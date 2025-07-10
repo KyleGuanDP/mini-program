@@ -1,0 +1,524 @@
+[
+  {
+    "title": "电源管理芯片",
+    "level": 1,
+    "children": [
+      {
+        "title": "交流直流变换器",
+        "level": 2,
+        "children": [
+          { "title": "非隔离变换器", "level": 3 },
+          { "title": "原边侧控制反激", "level": 3 },
+          { "title": "副边侧控制反激", "level": 3 },
+          { "title": "通用PWM控制器", "level": 3 },
+          { "title": "功率因素校正变换器", "level": 3 },
+          { "title": "串联谐振变换器", "level": 3 },
+          { "title": "同步整流器", "level": 3 },
+          { "title": "多合一变换器", "level": 3 }
+        ]
+      },
+      {
+        "title": "直流直流变换器",
+        "level": 2,
+        "children": [
+          { "title": "降压型稳压器", "level": 3 },
+          { "title": "升压型稳压器", "level": 3 },
+          { "title": "降压升压型稳压器", "level": 3 },
+          { "title": "反向稳压器", "level": 3 },
+          { "title": "隔离型正反激稳压器", "level": 3 },
+          { "title": "桥式稳压器", "level": 3 },
+          { "title": "电荷泵", "level": 3 },
+          { "title": "多通道电源", "level": 3 },
+          { "title": "集成电感电源模块", "level": 3 }
+        ]
+      },
+      {
+        "title": "线性稳压器",
+        "level": 2,
+        "children": [
+          {
+            "title": "单通道线性稳压器",
+            "level": 3
+          },
+          {
+            "title": "多通道线性稳压器",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "交流直流LED驱动器",
+        "level": 2,
+        "children": [
+          {
+            "title": "非隔离LED驱动开关变换器",
+            "level": 3
+          },
+          {
+            "title": "隔离LED驱动开关变换器",
+            "level": 3
+          },
+          {
+            "title": "线性LED驱动变换器",
+            "level": 3
+          },
+          {
+            "title": "调光接口",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "直流直流LED驱动器",
+        "level": 2,
+        "children": [
+          {
+            "title": "开关电源型",
+            "level": 3
+          },
+          {
+            "title": "电荷泵型",
+            "level": 3
+          },
+          {
+            "title": "线性恒流型",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "显示电源&驱动器",
+        "level": 2,
+        "children": [
+          {
+            "title": "LCD偏置电源",
+            "level": 3
+          },
+          {
+            "title": "OLED偏置电源",
+            "level": 3
+          },
+          {
+            "title": "GAMMA/VCOM缓冲器",
+            "level": 3
+          },
+          {
+            "title": "电平转换器",
+            "level": 3
+          },
+          {
+            "title": "LED显示驱动器",
+            "level": 3
+          }
+        ]
+      },
+
+      {
+        "title": "电池管理",
+        "level": 2,
+        "children": [
+          {
+            "title": "电池充电",
+            "level": 3
+          },
+          {
+            "title": "电池监测与平衡",
+            "level": 3
+          },
+          {
+            "title": "电池电量计",
+            "level": 3
+          },
+          {
+            "title": "电池保护",
+            "level": 3
+          },
+          {
+            "title": "电池认证",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "电机驱动器",
+        "level": 2,
+        "children": [
+          {
+            "title": "直流有刷驱动器",
+            "level": 3
+          },
+          {
+            "title": "直流无刷驱动器",
+            "level": 3
+          },
+          {
+            "title": "步进电机驱动器",
+            "level": 3
+          },
+          {
+            "title": "智能功率模块",
+            "level": 3
+          },
+          {
+            "title": "交流电机驱动器",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "功率驱动器",
+        "level": 2,
+        "children": [
+          {
+            "title": "低侧驱动器",
+            "level": 3
+          },
+          {
+            "title": "桥式驱动器",
+            "level": 3
+          },
+          {
+            "title": "隔离驱动器",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "以太网供电",
+        "level": 2,
+        "children": [
+          {
+            "title": "PD供电设备",
+            "level": 3
+          },
+          {
+            "title": "PS电源设备",
+            "level": 3
+          }
+        ]
+      },
+
+      {
+        "title": "电源开关",
+        "level": 2,
+        "children": [
+          {
+            "title": "负载开关",
+            "level": 3
+          },
+          {
+            "title": "理想二极管/Oring控制器",
+            "level": 3
+          },
+          {
+            "title": "电子保险丝/热插拔控制器",
+            "level": 3
+          },
+          {
+            "title": "高侧开关",
+            "level": 3
+          },
+          {
+            "title": "低侧开关",
+            "level": 3
+          },
+          {
+            "title": "功率复用开关",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "USB端口IC",
+        "level": 2,
+        "children": [
+          {
+            "title": "USB Power Switch",
+            "level": 3
+          },
+          {
+            "title": "USB PD Controller",
+            "level": 3
+          },
+          {
+            "title": "USB 转接驱动器和多路复用器",
+            "level": 3
+          },
+          {
+            "title": "USB端口保护",
+            "level": 3
+          },
+          {
+            "title": "USB集线器/转换器/控制器",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "电源监控",
+        "level": 2,
+        "children": [
+          {
+            "title": "时序发生器",
+            "level": 3
+          },
+          {
+            "title": "电压监控与复位芯片",
+            "level": 3
+          },
+          {
+            "title": "功率监控器",
+            "level": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "信号链",
+    "level": 1,
+    "children": [
+      {
+        "title": "开关",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "时钟&计时器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "隔离器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "接口",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "数模转换器（DAC）",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "模数转换器（ADC）",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "运算放大器（AP)",
+        "level": 2,
+        "children": []
+      }
+    ]
+  },
+  {
+    "title": "分立器件",
+    "level": 1,
+    "children": [
+      {
+        "title": "二极管",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "三极管",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "MOSFET",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "IGBT",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "GAN",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "SIC",
+        "level": 2,
+        "children": []
+      }
+    ]
+  },
+  {
+    "title": "专用芯片",
+    "level": 1,
+    "children": []
+  },
+  {
+    "title": "微控制器和处理器",
+    "level": 1,
+    "children": []
+  },
+  {
+    "title": "存储器",
+    "level": 1,
+    "children": [
+      {
+        "title": "磁传感器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "光学传感器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "温度传感器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "手势传感器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "生物传感器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "电化学传感器",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "加速度计",
+        "level": 2,
+        "children": []
+      },
+      {
+        "title": "陀螺仪",
+        "level": 2,
+        "children": []
+      }
+    ]
+  },
+
+  {
+    "title": "射频与微波",
+    "level": 1,
+    "children": [
+      {
+        "title": "射频器件",
+        "level": 2,
+        "children": [
+          {
+            "title": "发射器",
+            "level": 3
+          },
+          {
+            "title": "接收器",
+            "level": 3
+          },
+          {
+            "title": "放大器",
+            "level": 3
+          },
+          {
+            "title": "混频器",
+            "level": 3
+          },
+          {
+            "title": "调制解调器",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "传感器",
+        "level": 2,
+        "children": [
+          {
+            "title": "毫米波雷达传感器",
+            "level": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "传感器",
+    "level": 1,
+    "children": [
+      {
+        "title": "物理量传感器",
+        "level": 2,
+        "children": [
+          {
+            "title": "磁传感器",
+            "level": 3
+          },
+          {
+            "title": "光学传感器",
+            "level": 3
+          },
+          {
+            "title": "温度传感器",
+            "level": 3
+          },
+          {
+            "title": "手势传感器",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "生物化学传感器",
+        "level": 2,
+        "children": [
+          {
+            "title": "生物传感器",
+            "level": 3
+          },
+          {
+            "title": "电化学传感器",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "title": "运动传感器",
+        "level": 2,
+        "children": [
+          {
+            "title": "加速度计",
+            "level": 3
+          },
+          {
+            "title": "陀螺仪",
+            "level": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "电阻",
+    "level": 1,
+    "children": []
+  },
+  {
+    "title": "电容",
+    "level": 1,
+    "children": []
+  },
+  {
+    "title": "电感",
+    "level": 1,
+    "children": []
+  }
+]

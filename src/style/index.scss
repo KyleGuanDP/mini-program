@@ -1,0 +1,74 @@
+// @import './iconfont.css';
+
+.test {
+  // 可以通过 @apply 多个样式封装整体样式
+  @apply mt-4 ml-4;
+
+  padding-top: 4px;
+  color: red;
+}
+
+:root,
+page {
+  // 全局字体设置 - 针对手机端和PC小程序优化
+  // iOS手机: PingFang SC
+  // Android手机: Roboto, Noto Sans CJK SC
+  // PC小程序: Microsoft YaHei (Windows)
+  font-family: 'PingFang SC', 'Microsoft YaHei', '微软雅黑', 'Roboto', 'Noto Sans CJK SC',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  // 字体渲染优化
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  // 修改按主题色
+  // --wot-color-theme: #37c2bc;
+
+  // 修改按钮背景色
+  // --wot-button-primary-bg-color: green;
+}
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  .no-data-text {
+    height: 44rpx;
+    font-weight: 600;
+    font-size: 32rpx;
+    color: #000105;
+    line-height: 44rpx;
+    text-align: center;
+    font-style: normal;
+    text-transform: none;
+    margin-top: 22rpx;
+    margin-bottom: 20rpx;
+  }
+  .no-data-img {
+    width: 540rpx;
+    height: 478rpx;
+  }
+  .no-data-text1 {
+    height: 40rpx;
+    font-weight: 400;
+    font-size: 28rpx;
+    color: #b6b6b6;
+    line-height: 40rpx;
+    text-align: center;
+    font-style: normal;
+    text-transform: none;
+  }
+}
+.custom-navbar {
+  // background: darkblue;
+  .wd-navbar__left {
+    .wd-navbar__text {
+      font-weight: 600;
+      font-size: 32rpx;
+      color: #000105;
+      line-height: 44rpx;
+    }
+  }
+}
