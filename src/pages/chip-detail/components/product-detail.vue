@@ -22,7 +22,7 @@
         :indicator="false"
       >
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="item">
-          <image :src="item" @error="" mode="aspectFit" />
+          <image :src="item" mode="scaleToFill" />
         </swiper-item>
       </swiper>
       <view class="left-nav nav" @click="decrementIndex">
@@ -130,14 +130,27 @@ const props = defineProps({
 const detail = toRef(props, 'data')
 
 const swiperList = computed(() => {
-  const list = [detail.value?.pin_config, detail.value?.function_block_diagram]
-  if (detail.value.typical_application_circuit?.length) {
-    detail.value.typical_application_circuit.map((e) => {
-      list.push(e.path)
+  const list: string[] = []
+
+  if (detail.value?.pin_config) {
+    list.push(detail.value.pin_config)
+  }
+
+  if (detail.value?.function_block_diagram) {
+    list.push(detail.value.function_block_diagram)
+  }
+
+  if (Array.isArray(detail.value?.typical_application_circuit)) {
+    detail.value.typical_application_circuit.forEach((e) => {
+      if (e?.path) {
+        list.push(e.path)
+      }
     })
   }
+
   return list
 })
+
 const dotList = computed(() => {
   return swiperList.value.map((item, index) => index)
 })
@@ -171,9 +184,6 @@ const show4 = ref(false)
     height: 500rpx;
     .swiper-item {
       border-radius: 20rpx 20rpx 20rpx 20rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
   .nav {
