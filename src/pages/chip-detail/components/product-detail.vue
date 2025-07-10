@@ -22,7 +22,7 @@
         :indicator="false"
       >
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="item">
-          <image :src="item" mode="scaleToFill" />
+          <image :src="item" mode="scaleToFill" @click="zoomIn(swiperList, index)" />
         </swiper-item>
       </swiper>
       <view class="left-nav nav" @click="decrementIndex">
@@ -169,6 +169,15 @@ const show1 = ref(false)
 const show2 = ref(false)
 const show3 = ref(false)
 const show4 = ref(false)
+
+// 添加图片放大功能
+const zoomIn = (swiperList, index) => {
+  uni.previewImage({
+    // 必须使用绝对路径（从项目根目录开始）
+    current: swiperList[index],
+    urls: swiperList,
+  })
+}
 </script>
 
 <style lang="scss" scoped>
