@@ -41,7 +41,7 @@
         "iconPath": "static/tabbar/ai.png",
         "selectedIconPath": "static/tabbar/ai_activate.png",
         "pagePath": "pages/login/login",
-        "text": "个人中心"
+        "text": "AI咨询"
       }
     ]
   },
@@ -119,6 +119,30 @@
       }
     },
     {
+      "path": "pages/favorite/displayTree",
+      "type": "page"
+    },
+    {
+      "path": "pages/favorite/index",
+      "type": "page"
+    },
+    {
+      "path": "pages/favorite/main",
+      "type": "page"
+    },
+    {
+      "path": "pages/favorite/pop",
+      "type": "page"
+    },
+    {
+      "path": "pages/favorite/tree",
+      "type": "page"
+    },
+    {
+      "path": "pages/login/avatar",
+      "type": "page"
+    },
+    {
       "path": "pages/login/index",
       "type": "page",
       "style": {
@@ -127,7 +151,19 @@
       }
     },
     {
+      "path": "pages/login/infoCard",
+      "type": "page"
+    },
+    {
       "path": "pages/login/login",
+      "type": "page"
+    },
+    {
+      "path": "pages/login/main",
+      "type": "page"
+    },
+    {
+      "path": "pages/login/phone",
       "type": "page"
     },
     {
@@ -144,6 +180,10 @@
       "style": {
         "navigationBarTitleText": ""
       }
+    },
+    {
+      "path": "pages/privacy/index",
+      "type": "page"
     },
     {
       "path": "pages/product/index",

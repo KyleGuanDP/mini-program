@@ -15,7 +15,7 @@
       v-model="value"
       confirm-type="search"
       type="text"
-      placeholder="搜索芯片型号、参考设计、设计工具"
+      placeholder="搜索芯片/分类/参考设计/文章/资讯等"
       placeholder-style="color: #666666 ; font-size: 28rpx;"
       @confirm="search"
     />

@@ -76,6 +76,11 @@
           <image class="icon2" src="@/static/images/chip-detail/email.png" mode="scaleToFill" />
           <view class="text1" style="color: #e65925">邮件</view>
         </view>
+        <view class="flex items-center">
+          <image class="icon2" src="@/static/images/chip-detail/email.png" mode="scaleToFill" />
+          <view class="text1" style="color: #e65925" @click="toggle">收藏</view>
+        </view>
+        <Pop v-if="pop" class="pop" :detail="detail" />
       </view>
     </view>
   </view>
@@ -83,6 +88,12 @@
 
 <script lang="ts" setup>
 import { downloadFile } from '@/utils/download'
+import Pop from '@/pages/favorite/pop.vue'
+import { connectWebSocket } from '@/utils/ws'
+
+// 弹窗
+const pop = ref(false)
+
 const styleList = ref({
   新产品: 'background: #E65925;',
   正在供货: 'background: #21C55E;',
@@ -90,6 +101,14 @@ const styleList = ref({
   不推荐用于新设计: 'background: #C48714;',
   停产: 'background: #8B8B8B;',
 })
+
+// 弹窗处理
+const toggle = () => {
+  pop.value = !pop.value
+}
+
+// 收藏点击处理
+
 const labelList = ref(['新产品', '正在供货', '预发布', '不推荐用于新设计', '停产'])
 // 定义组件接收的 props，data 为芯片详情数据对象
 const props = defineProps({

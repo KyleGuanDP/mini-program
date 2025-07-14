@@ -16,9 +16,16 @@
     </view>
     <view>
       <button @click="getUserInfo">Get</button>
-      《用户协议》
     </view>
-    <view></view>
+    <view>
+      <button @click="toAvatar">头像</button>
+    </view>
+    <view>
+      <button @click="toFavorite">收藏</button>
+    </view>
+    <view>
+      <button @click="toPop">收藏弹窗</button>
+    </view>
     <view class="photo">
       <image
         src="../../static/images/back.png"
@@ -40,9 +47,27 @@ const userInfo = ref<any>({})
 const hasLogin = ref(false)
 const show = ref(false)
 
+const toAvatar = () => {
+  uni.navigateTo({
+    url: '/pages/login/avatar',
+  })
+}
+
+const toFavorite = () => {
+  uni.navigateTo({
+    url: '/pages/favorite/main',
+  })
+}
+
+// 收藏弹窗
+const toPop = () => {
+  uni.navigateTo({
+    url: '/pages/favorite/pop',
+  })
+}
+// 图片放大
 const zoomIn = () => {
   uni.previewImage({
-    // 必须使用绝对路径（从项目根目录开始）
     current: '/static/images/back.png',
     urls: ['/static/images/back.png'],
     success: () => console.log('预览成功'),
@@ -104,6 +129,7 @@ const tokenPrint = () => {
   console.log('this is my refresh', refresh)
 }
 
+//获取用户信息
 const getUserInfo = async () => {
   const token = uni.getStorageSync('token')
   const res = await uni.request({
