@@ -1,4 +1,3 @@
-<!-- template -->
 <template>
   <view>
     <button open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber">
@@ -8,8 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
 const onGetPhoneNumber = async (e) => {
   console.log('按钮返回:', e.detail)
 

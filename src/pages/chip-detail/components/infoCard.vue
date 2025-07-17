@@ -8,6 +8,8 @@
 </route>
 
 <template>
+  <add-collection v-if="addVisible" @change="addV2" :detail="detail" />
+  <pop-up v-if="visible" @change="addV" />
   <view class="list-card">
     <view class="flex items-start">
       <view class="icon3">
@@ -78,22 +80,32 @@
         </view>
         <view class="flex items-center">
           <image class="icon2" src="@/static/images/chip-detail/email.png" mode="scaleToFill" />
-          <view class="text1" style="color: #e65925" @click="toggle">收藏</view>
+          <view class="text1" style="color: #e65925" @click="showPopup">收藏</view>
         </view>
-        <Pop v-if="pop" class="pop" :detail="detail" />
       </view>
     </view>
   </view>
 </template>
 
 <script lang="ts" setup>
+import { addToFolder } from '../../../utils/addToFolder'
 import { downloadFile } from '@/utils/download'
-import Pop from '@/pages/favorite/pop.vue'
-import { connectWebSocket } from '@/utils/ws'
+import popUp from '@/pages/favorite/popUp.vue'
+import addCollection from '@/pages/favorite/addCollection.vue'
+// 弹窗1
+const visible = ref(false)
+// 弹窗2
+const addVisible = ref(false)
+// 修改弹窗2状态
+const addV = () => {
+  addVisible.value = true
+}
 
-// 弹窗
-const pop = ref(false)
-
+const addV2 = () => {
+  addVisible.value = false
+}
+// item_id
+const item_id = ref('')
 const styleList = ref({
   新产品: 'background: #E65925;',
   正在供货: 'background: #21C55E;',
@@ -102,9 +114,21 @@ const styleList = ref({
   停产: 'background: #8B8B8B;',
 })
 
-// 弹窗处理
-const toggle = () => {
-  pop.value = !pop.value
+const showPopup = async () => {
+  const res = await addToFolder(
+    'http://121.199.10.78:8000/api/v1/collections/items',
+    'product',
+    detail.value.pid,
+    null,
+    detail.value.part_number,
+    detail.value.datasheet_file,
+  )
+
+  console.log(res)
+  visible.value = true
+  setTimeout(() => {
+    visible.value = false
+  }, 3000) // 3秒自动消失
 }
 
 // 收藏点击处理

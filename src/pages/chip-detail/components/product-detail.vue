@@ -22,7 +22,7 @@
         :indicator="false"
       >
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="item">
-          <image :src="item" mode="scaleToFill" @click="zoomIn(swiperList, index)" />
+          <image :src="item" mode="aspectFit" @click="zoomIn(swiperList, index)" />
         </swiper-item>
       </swiper>
       <view class="left-nav nav" @click="decrementIndex">
@@ -170,13 +170,39 @@ const show2 = ref(false)
 const show3 = ref(false)
 const show4 = ref(false)
 
+// 提取fid
+const getFid = (url: string): string | null => {
+  const parts = url.split('fid=')
+  return parts.length > 1 ? parts[1] : null
+}
+
 // 添加图片放大功能
-const zoomIn = (swiperList, index) => {
-  uni.previewImage({
-    // 必须使用绝对路径（从项目根目录开始）
-    current: swiperList[index],
-    urls: swiperList,
-  })
+const zoomIn = async (swiperList, index) => {
+  const origin = swiperList[index]
+  const fid = getFid(origin)
+  console.log(fid)
+  try {
+    const res = await uni.request({
+      url: `https://junctionmagic.com/api/v1/files/get_oss_url?fid=${fid}`,
+      method: 'GET',
+    })
+    const data = res.data as any
+    const ossUrl = data.url
+
+    console.log('真实 OSS 链接:', ossUrl)
+
+    uni.previewImage({
+      current: ossUrl,
+      urls: [ossUrl],
+    })
+  } catch (err) {
+    console.error('获取图片重定向失败:', err)
+    uni.showToast({
+      title: '加载失败',
+      icon: 'none',
+      duration: 3000,
+    })
+  }
 }
 </script>
 
@@ -184,7 +210,7 @@ const zoomIn = (swiperList, index) => {
 .tab1 {
   margin-top: 20rpx;
   .swiper-wrap {
-    background: #eeeeee;
+    background: white;
     height: 500rpx;
     border-radius: 20rpx 20rpx 20rpx 20rpx;
     position: relative;

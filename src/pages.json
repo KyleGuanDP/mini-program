@@ -40,7 +40,7 @@
       {
         "iconPath": "static/tabbar/ai.png",
         "selectedIconPath": "static/tabbar/ai_activate.png",
-        "pagePath": "pages/login/login",
+        "pagePath": "pages/login/center",
         "text": "AI咨询"
       }
     ]
@@ -54,6 +54,10 @@
       "style": {
         "navigationBarTitleText": ""
       }
+    },
+    {
+      "path": "pages/about/about",
+      "type": "page"
     },
     {
       "path": "pages/ai/index",
@@ -119,6 +123,10 @@
       }
     },
     {
+      "path": "pages/favorite/addCollection",
+      "type": "page"
+    },
+    {
       "path": "pages/favorite/displayTree",
       "type": "page"
     },
@@ -135,7 +143,15 @@
       "type": "page"
     },
     {
+      "path": "pages/favorite/popUp",
+      "type": "page"
+    },
+    {
       "path": "pages/favorite/tree",
+      "type": "page"
+    },
+    {
+      "path": "pages/login/agree",
       "type": "page"
     },
     {
@@ -143,12 +159,12 @@
       "type": "page"
     },
     {
+      "path": "pages/login/center",
+      "type": "page"
+    },
+    {
       "path": "pages/login/index",
-      "type": "page",
-      "style": {
-        "navigationBarTitleText": "登录",
-        "navigationStyle": "custom"
-      }
+      "type": "page"
     },
     {
       "path": "pages/login/infoCard",
@@ -167,6 +183,10 @@
       "type": "page"
     },
     {
+      "path": "pages/login/phoneLogin",
+      "type": "page"
+    },
+    {
       "path": "pages/mine/index",
       "type": "page",
       "style": {
@@ -180,6 +200,14 @@
       "style": {
         "navigationBarTitleText": ""
       }
+    },
+    {
+      "path": "pages/personal-info/edit",
+      "type": "page"
+    },
+    {
+      "path": "pages/personal-info/personalCenter",
+      "type": "page"
     },
     {
       "path": "pages/privacy/index",

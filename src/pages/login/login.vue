@@ -26,6 +26,15 @@
     <view>
       <button @click="toPop">收藏弹窗</button>
     </view>
+    <view>
+      <button @click="toLogin">去登录界面</button>
+    </view>
+    <view>
+      <button @click="toCollection">去收藏界面</button>
+    </view>
+    <view>
+      <button @click="toCollectionPopUp">toCollectionPopUp</button>
+    </view>
     <view class="photo">
       <image
         src="../../static/images/back.png"
@@ -47,6 +56,22 @@ const userInfo = ref<any>({})
 const hasLogin = ref(false)
 const show = ref(false)
 
+const toCollectionPopUp = () => {
+  uni.navigateTo({
+    url: '/pages/favorite/addCollection',
+  })
+}
+const toLogin = () => {
+  uni.navigateTo({
+    url: '/pages/login/center',
+  })
+}
+
+const toCollection = () => {
+  uni.navigateTo({
+    url: '/pages/favorite/index',
+  })
+}
 const toAvatar = () => {
   uni.navigateTo({
     url: '/pages/login/avatar',

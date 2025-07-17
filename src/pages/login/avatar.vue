@@ -15,13 +15,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import Tree from '../favorite/tree.vue'
 
 const avatar = ref<string>('')
 
 const onChooseAvatar = (e) => {
   avatar.value = e.detail.avatarUrl
-  console.log('获取到的头像地址:', avatar.value)
 }
 </script>
 

@@ -19,7 +19,7 @@
       </view>
       <view class="menu-item" @click="goDetail('classifyQuery')">
         <image class="menu-icon" src="@/static/images/flcx.png" mode="scaleToFill" />
-        <view>分类查询</view>
+        <view>分类选型</view>
       </view>
       <view class="menu-item" @click="test">
         <image class="menu-icon" src="@/static/images/jtcx.png" mode="scaleToFill" />

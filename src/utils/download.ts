@@ -1,6 +1,39 @@
 // 1. 基础下载功能
 import { getEnvBaseUrl } from './index'
+const COMMON_MIME_TYPES = {
+  // 文档类
+  'application/pdf': 'PDF',
+  'application/msword': 'DOC',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+  'application/vnd.ms-excel': 'XLS',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX',
+  'text/plain': 'TXT',
+  'text/csv': 'CSV',
 
+  // 图片类
+  'image/jpeg': 'JPG',
+  'image/png': 'PNG',
+  'image/gif': 'GIF',
+  'image/webp': 'WEBP',
+  'image/svg+xml': 'SVG',
+
+  // 压缩包
+  'application/zip': 'ZIP',
+  'application/x-rar-compressed': 'RAR',
+
+  // 音频视频
+  'audio/mpeg': 'MP3',
+  'video/mp4': 'MP4',
+
+  // 网页相关
+  'text/html': 'HTML',
+  'text/css': 'CSS',
+  'application/javascript': 'JS',
+  'application/json': 'JSON',
+
+  // 默认回退
+  'application/octet-stream': 'BIN',
+}
 export const downloadFile = (url, fileName, path = false) => {
   let baseUrl = getEnvBaseUrl()
   return new Promise((resolve, reject) => {
@@ -16,13 +49,14 @@ export const downloadFile = (url, fileName, path = false) => {
         console.log('下载结果:', res)
         if (res.statusCode === 200) {
           var filePath = res.tempFilePath
+          let fileType = COMMON_MIME_TYPES[res?.header['Content-Type']] || 'UNKNOWN'
           // 下载成功，保存到相册或本地
           if (isImage(fileName) || isImage(filePath)) {
             // 如果是图片，保存到相册
             saveImageToAlbum(res.tempFilePath)
           } else {
             // 其他文件类型，打开文档预览
-            openDocument(res.tempFilePath)
+            openDocument(res.tempFilePath, fileType)
           }
           resolve(res.tempFilePath)
         } else {
@@ -86,14 +120,16 @@ const saveImageToAlbum = (filePath) => {
 }
 
 // 4. 打开文档预览
-const openDocument = (filePath) => {
+const openDocument = (filePath, fileType) => {
   uni.openDocument({
     filePath: filePath,
+    fileType: fileType,
     showMenu: true,
     success: () => {
       console.log('打开文档成功')
     },
     fail: (err) => {
+      console.log(err, fileType, filePath)
       uni.showToast({
         title: '无法预览此文件',
         icon: 'none',
