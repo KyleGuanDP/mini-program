@@ -139,6 +139,10 @@
       "type": "page"
     },
     {
+      "path": "pages/favorite/management",
+      "type": "page"
+    },
+    {
       "path": "pages/favorite/pop",
       "type": "page"
     },
@@ -160,6 +164,10 @@
     },
     {
       "path": "pages/login/center",
+      "type": "page"
+    },
+    {
+      "path": "pages/login/collection",
       "type": "page"
     },
     {

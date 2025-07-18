@@ -17,7 +17,7 @@
       <view class="mine">
         <view class="personal" @click="toPersonalCenter">个人中心</view>
         <view class="divider"></view>
-        <view class="collection">我的收藏</view>
+        <view class="collection" @click="toCollection">我的收藏</view>
         <view class="divider"></view>
         <view class="history">我的足迹</view>
       </view>
@@ -35,6 +35,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { withAuthUpload } from '@/utils/withAuthUpload'
+import { withAuthRequest } from '@/utils/withAuthRequest'
 const status = ref(false)
 const userName = ref('游客')
 const avatarUrl = ref('../../static/images/cxtd.png')
@@ -43,6 +45,7 @@ const avatarUrl = ref('../../static/images/cxtd.png')
 const onChooseAvatar = (e: any) => {
   avatarUrl.value = e.detail.avatarUrl
   uni.setStorageSync('avatar', avatarUrl.value)
+  download(avatarUrl.value)
 }
 
 // 点击用户名获取昵称（推荐）
@@ -100,12 +103,72 @@ const toPersonalCenter = () => {
   }
 }
 
-onShow(() => {
-  if (uni.getStorageSync('avatar')) {
-    avatarUrl.value = uni.getStorageSync('avatar')
-  } else {
-    avatarUrl.value = '../../static/images/cxtd.png'
+// 去收藏夹
+const toCollection = () => {
+  uni.navigateTo({
+    url: '/pages/login/collection',
+  })
+}
+// download avatar
+const download = async (url: string) => {
+  if (!url) {
+    uni.showToast({ title: '头像地址无效', icon: 'none' })
+    return
   }
+
+  uni.downloadFile({
+    url,
+    success: (res) => {
+      if (res.statusCode === 200) {
+        withAuthUpload(
+          {
+            url: 'http://121.199.10.78:8000/api/v1/users/me/avatar',
+            uploadMode: true,
+            filePath: res.tempFilePath,
+            method: 'PUT',
+            data: {},
+          },
+          (uploadRes) => {
+            console.log('上传成功', uploadRes)
+            uni.showToast({ title: '上传成功', icon: 'success' })
+          },
+          (err) => {
+            console.error('上传失败', err)
+            uni.showToast({ title: '上传失败', icon: 'none' })
+          },
+        )
+      } else {
+        console.warn('下载失败 statusCode:', res.statusCode)
+        uni.showToast({ title: '头像下载失败', icon: 'none' })
+      }
+    },
+    fail: (err) => {
+      console.error('下载请求失败', err)
+      uni.showToast({ title: '网络错误，下载失败', icon: 'none' })
+    },
+  })
+}
+
+// 获取个人信息
+const getPersonalInfo = async (head: string) => {
+  const url = head + 'api/v1/users/me'
+
+  await withAuthRequest(
+    {
+      url: url,
+      method: 'GET',
+    },
+    (res) => {
+      console.log('this is res of getPersonal Info', res)
+      const data = res.data as any
+      avatarUrl.value = head + 'api/v1/files/download?path=' + data.avatar_url
+    },
+    (err) => {},
+  )
+}
+
+onShow(() => {
+  getPersonalInfo('http://121.199.10.78:8000/')
 })
 </script>
 
