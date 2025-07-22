@@ -7,42 +7,30 @@
     </view>
     <view class="button-group">
       <button class="button move" :disabled="moveDisable" @click="onActiveMove">移动到</button>
-      <button class="button cancelCollection" :disabled="cancelDisable">取消收藏</button>
-      <button class="button management" :disabled="manageDisable" @click="onActiveManage">
-        目录管理
-      </button>
+      <button class="button cancelCollection">取消收藏</button>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 // emit all select
-const emit = defineEmits(['allSelected', 'activeMove', 'activeManage'])
+const emit = defineEmits(['allSelected', 'activeMove'])
 
 // 接受传入值
 const props = defineProps<{
-  selectedFolders: any[]
   selectedItems: any[]
 }>()
 
 // computed
 const selectNumbers = computed(() => {
-  return props.selectedFolders.length + props.selectedItems.length
+  return props.selectedItems.length
 })
 
 const moveDisable = computed(() => {
-  if (props.selectedFolders.length || props.selectedItems.length) {
+  if (props.selectedItems.length) {
     return false
   } else {
     return true
-  }
-})
-
-const cancelDisable = computed(() => {
-  if (props.selectedFolders.length) {
-    return true
-  } else {
-    return false
   }
 })
 
@@ -67,16 +55,11 @@ const toggleAllSelected = () => {
 const onActiveMove = () => {
   emit('activeMove')
 }
-
-// active management
-const onActiveManage = () => {
-  emit('activeManage')
-}
 </script>
 <style lang="css" scoped>
 /* [class] {
-  border: 1rpx solid;
-} */
+    border: 1rpx solid;
+  } */
 
 .container {
   bottom: 0;

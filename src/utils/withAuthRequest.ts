@@ -67,7 +67,7 @@ export const withAuthRequest = async (
     console.error('请求异常:', err)
     onFail?.(err)
     uni.showToast({
-      title: '网络异常',
+      title: '请先登录',
       icon: 'none',
     })
   }

@@ -83,7 +83,9 @@ const login = async () => {
   } else {
     uni.setStorageSync('token', data.access_token)
     uni.setStorageSync('refresh', data.refresh_token)
+
     uni.setStorageSync('status', true)
+    await getPersonalInfo('http://121.199.10.78:8000/')
     uni.showToast({ title: '登录成功' })
   }
 }
@@ -105,9 +107,18 @@ const toPersonalCenter = () => {
 
 // 去收藏夹
 const toCollection = () => {
-  uni.navigateTo({
-    url: '/pages/login/collection',
-  })
+  if (uni.getStorageSync('status')) {
+    uni.navigateTo({
+      url: '/pages/login/collection',
+    })
+  } else {
+    uni.showToast({
+      title: '请先登录',
+      icon: 'error',
+      duration: 2000,
+      mask: true,
+    })
+  }
 }
 // download avatar
 const download = async (url: string) => {
@@ -163,12 +174,17 @@ const getPersonalInfo = async (head: string) => {
       const data = res.data as any
       avatarUrl.value = head + 'api/v1/files/download?path=' + data.avatar_url
     },
-    (err) => {},
+    (err) => {
+      console.log('出发了获取信息报错流程')
+      avatarUrl.value = '../../static/images/cxtd.png'
+      console.log('这是报错后的头像地址', (avatarUrl.value = '../../static/images/cxtd.png'))
+    },
   )
 }
 
-onShow(() => {
-  getPersonalInfo('http://121.199.10.78:8000/')
+onShow(async () => {
+  await getPersonalInfo('http://121.199.10.78:8000/')
+  console.log('主页面加载')
 })
 </script>
 

@@ -1,27 +1,37 @@
 <template>
-  <view class="container">
+  <view class="container" v-if="page === 'folder'">
     <view class="category">
       <view class="sub-category product" @tap="selectItem" data-name="product">产品</view>
-      <view class="sub-category" @tap="selectItem" data-name="paper">技术文章</view>
-      <view class="sub-category" @tap="selectItem" data-name="design">参考设计</view>
+      <view class="sub-category" @tap="selectItem" data-name="technical_paper">技术文章</view>
+      <view class="sub-category" @tap="selectItem" data-name="reference_design">参考设计</view>
     </view>
 
     <view class="main">
       <view class="edit">
-        <view class="add">新建文件夹</view>
+        <view class="add" @click="toAlbum">专辑</view>
+        <view class="order" @click="toProduct">文件夹</view>
+      </view>
+      <view class="edit">
+        <view class="add" @click="activeCreateFolder">新建文件夹</view>
         <view class="order">智能排序</view>
       </view>
-      <scroll-view scroll-y class="content">
-        <view class="back-wrapper" v-if="folderStack.length > 1" @click="goBack">
-          <text class="back-arrow">←</text>
-          <text class="back-label">返回上一级</text>
+      <view class="route">
+        <view
+          class="specific-route"
+          v-for="(route, index) in routes"
+          :key="index"
+          @click="goToIndex(index)"
+        >
+          {{ route.name }} >
         </view>
+      </view>
+      <scroll-view scroll-y class="content">
         <view class="folders">
           <view class="folder-name" v-for="folder in folders" :key="folder.id">
-            <view class="folder-image" @click="getFolder(type, folder.id)">
+            <view class="folder-image" @click="loadFolder(folder.id, folder.name)">
               <image src="../../static/images/folder.png" mode="scaleToFill" />
             </view>
-            <view @click="getFolder(type, folder.id)">{{ folder.name }}</view>
+            <view @click="loadFolder(folder.id, folder.name)">{{ folder.name }}</view>
             <view
               class="icon"
               :class="{ active: activeIcons[folder.id] }"
@@ -33,7 +43,7 @@
         <view class="items">
           <view class="folder-name" v-for="item in items" :key="item.id">
             <view class="folder-image">
-              <image src="../../static/images/folder.png" mode="scaleToFill" />
+              <image src="../../static/images/chip.png" mode="scaleToFill" />
             </view>
             <view>{{ item.target_name }}</view>
             <view
@@ -50,22 +60,101 @@
       :selectedItems="selectedCollectionStack"
       v-if="selectedFolderStack.length || selectedCollectionStack.length"
       @allSelected="allSelected"
+      @activeMove="activeMoveFunc"
+      @activeManage="activeManageFunc"
+    />
+    <Move
+      :type="type"
+      :selectedCollections="selectedCollectionStack"
+      :selectedFolders="selectedFolderStack"
+      v-if="activeMove"
+      @deactivateMove="activeMoveFunc2"
+      @getRouters="getRoutes"
+    />
+
+    <manageOption
+      v-if="activeManage"
+      @deactivateManage="activeManageFunc2"
+      @editEmit="processEditEmit"
+      :type="type"
+      :selectedFolders="selectedFolderStack"
+      :selectedItems="selectedCollectionStack"
+    />
+    <createFolder
+      :type="type"
+      :parentId="routes"
+      v-if="activeCreate"
+      @closeCreateFolder="activeCreateFolder2"
+      @createFolder="createEmit"
+    />
+  </view>
+  <view v-else>
+    <view class="category">
+      <view class="sub-category product" @tap="selectItem" data-name="product">产品</view>
+      <view class="sub-category" @tap="selectItem" data-name="paper">技术文章</view>
+      <view class="sub-category" @tap="selectItem" data-name="design">参考设计</view>
+    </view>
+    <view class="edit">
+      <view class="add" @click="toAlbum">专辑</view>
+      <view class="order" @click="toProduct">文件夹</view>
+    </view>
+    <scroll-view scroll-y class="content">
+      <view class="items">
+        <view class="folder-name" v-for="item in flatItems" :key="item.id">
+          <view class="folder-image">
+            <image src="../../static/images/chip.png" mode="scaleToFill" />
+          </view>
+          <view>{{ item.target_name }}</view>
+          <view
+            class="icon"
+            :class="{ active: activeIcons[item.id] }"
+            @click="toggleCollectionIcon(item.id)"
+          ></view>
+        </view>
+      </view>
+    </scroll-view>
+    <ManagementAlbum
+      :selectedItems="selectedCollectionStack"
+      v-if="selectedCollectionStack.length"
+      @allSelected="allSelected"
+      @activeMove="activeMoveFunc"
+    />
+    <Move
+      :type="type"
+      :selectedCollections="selectedCollectionStack"
+      v-if="activeMove"
+      @deactivateMove="activeMoveFunc2"
+      @getRouters="getRoutes"
     />
   </view>
 </template>
 
 <script setup lang="ts">
-import { withAuthRequest } from '@/utils/withAuthRequest'
+import { getFolder } from '@/utils/getFolders'
+import { getAlbum } from '@/utils/getAlbum'
 import { ref } from 'vue'
 import management from '../favorite/management.vue'
+import Move from '../favorite/move.vue'
+import ManagementAlbum from '../favorite/managementAlbum.vue'
+import manageOption from '../favorite/manageOption.vue'
+import createFolder from '../favorite/createFolder.vue'
 //初始化数据
 const folders = ref<any[]>([])
 const items = ref<any[]>([])
 const type = ref<string>('product')
-const folderStack = ref<(string | null)[]>([])
+// const folderStack = ref<(string | null)[]>([])
 const selectedCollectionStack = ref<(string | null)[]>([])
 const selectedFolderStack = ref<(string | null)[]>([])
-const activeIcons = ref<Record<string, boolean>>({})
+const activeIcons = ref<Record<number, boolean>>({})
+
+const activeMove = ref<boolean>(false)
+const activeManage = ref<boolean>(false)
+const activeCreate = ref<boolean>(false)
+
+const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
+const page = ref<string>('folder')
+const flatItems = ref<any[]>([])
+const loading = ref(false)
 
 //切换icon状态
 function toggleCollectionIcon(id: string) {
@@ -91,48 +180,62 @@ function toggleFolderIcon(id: string) {
 // 切换type
 function selectItem(e) {
   type.value = e.currentTarget.dataset.name
-  console.log('当前选中：', type.value)
-  getFolder(type.value, null)
+  loadFolder(null)
 }
 
-// 请求显示内容的函数
-const getFolder = async (
-  typeValue: string,
-  folderId: string | null,
-  shouldPush: boolean = true,
-) => {
-  let url = `http://121.199.10.78:8000/api/v1/collections/folders/children?target_type=${typeValue}`
-  if (folderId !== null) {
-    url += `&folder_id=${folderId}`
+// switch move status to true
+const activeMoveFunc = () => {
+  activeMove.value = true
+}
+
+// switch move status to false
+const activeMoveFunc2 = () => {
+  activeMove.value = false
+}
+
+// switch moveOptions to true
+const activeManageFunc = () => {
+  activeManage.value = true
+}
+
+// switch moveOptions to false
+const activeManageFunc2 = () => {
+  activeManage.value = false
+}
+
+// switch createFolder to true
+const activeCreateFolder = () => {
+  activeCreate.value = true
+}
+
+// switch createFolder to false
+const activeCreateFolder2 = () => {
+  activeCreate.value = false
+}
+
+// get folder
+async function loadFolder(folderId: any | null, folderName?: string | null) {
+  await getFolder(type.value, folderId, true, folders, items)
+  console.log(items.value)
+  const lastRoute = routes.value.at(-1)
+  if (folderName && lastRoute?.name !== folderName) {
+    routes.value.push({ name: folderName, id: folderId })
   }
-
-  console.log('请求 URL:', url)
-
-  await withAuthRequest(
-    { url, method: 'GET' },
-    (res) => {
-      const data = res.data as any
-      folders.value = data.folders
-      items.value = data.items
-
-      if (shouldPush && folderStack.value.at(-1) !== folderId) {
-        folderStack.value.push(folderId)
-      }
-
-      console.log('当前 folderStack:', [...folderStack.value])
-    },
-    (err) => {
-      console.warn('获取文件夹失败', err)
-    },
-  )
 }
 
-// 返回上一级
-const goBack = () => {
-  if (folderStack.value.length <= 1) return
-  folderStack.value.pop()
-  const prev = folderStack.value.at(-1) ?? null
-  getFolder(type.value, prev, false)
+// // 返回上一级
+// const goBack = () => {
+//   if (folderStack.value.length <= 1) return
+//   folderStack.value.pop()
+//   const prev = folderStack.value.at(-1) ?? null
+//   getFolder(type.value, prev, false)
+// }
+
+// 路由
+function goToIndex(index: number) {
+  const target = routes.value[index]
+  routes.value = routes.value.slice(0, index + 1)
+  getFolder(type.value, target.id, false, folders, items)
 }
 
 // 全选
@@ -154,16 +257,84 @@ const allSelected = (value: boolean) => {
     selectedCollectionStack.value = []
   }
 }
+
+// switch page to product
+const toProduct = () => {
+  page.value = 'folder'
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+}
+
+// switch page to album
+const toAlbum = () => {
+  page.value = 'Album'
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+}
+
+// move pass the routes parameters
+const getRoutes = async (route: Array<{ name: string; id: string | null }>) => {
+  // loading.value = true
+  uni.showLoading({
+    title: '加载中...',
+    mask: true,
+  })
+  await loadFolder(route.at(-1).id, route.at(-1).name)
+  routes.value = route
+  activeMove.value = false
+  activeIcons.value = {}
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+  // loading.value = false
+  uni.hideLoading()
+}
+
+// edit pass
+const processEditEmit = async () => {
+  uni.showLoading({
+    title: '加载中...',
+    mask: true,
+  })
+
+  const route = routes.value
+  await loadFolder(route.at(-1).id)
+  activeManage.value = false
+  activeIcons.value = {}
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+
+  uni.hideLoading()
+}
+
+// create folder emit
+const createEmit = async () => {
+  uni.showLoading({
+    title: '加载中...',
+    mask: true,
+  })
+
+  const route = routes.value
+  await loadFolder(route.at(-1).id)
+  activeIcons.value = {}
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+
+  uni.hideLoading()
+}
+
 //初始化数据
 onShow(() => {
-  folderStack.value = [null]
-  getFolder(type.value, null)
+  routes.value = [{ name: '根目录', id: null }]
+  type.value = 'product'
+  page.value = 'folder'
+  getAlbum(type.value, flatItems)
+  loadFolder(null)
 })
 </script>
 <style lang="css" scoped>
-[class] {
+/* [class] {
   border: 1rpx solid;
-}
+} */
 
 .container {
   width: 100%;
@@ -199,6 +370,7 @@ onShow(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
 }
 
 .edit {
@@ -212,6 +384,21 @@ onShow(() => {
 .content {
   flex: 1;
   width: 98%;
+}
+
+.route {
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 30rpx;
+  color: #1d8aed;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
 }
 
 .folders,
@@ -239,8 +426,6 @@ onShow(() => {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 12rpx;
-  background-color: #f8f8f8;
 }
 
 .folder-image image {

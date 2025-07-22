@@ -244,6 +244,12 @@ const edit = async () => {
     (res) => {
       console.log(res)
       getUserInfo()
+      uni.showToast({
+        title: '修改成功',
+        icon: 'success',
+        duration: 2000,
+        mask: true,
+      })
       // const data = res.data as any
       // namePlaceholder.value = data.name || '请输入姓名'
       // companyPlaceholder.value = data.company || '请输入公司名称'
@@ -264,7 +270,7 @@ const logout = async () => {
   await withAuthRequest(
     { url, method: 'POST' },
     (res) => {
-      console.log(res)
+      console.log('this is logout log', res)
       uni.setStorageSync('status', false)
       uni.removeStorageSync('token')
       uni.removeStorageSync('refresh')
@@ -274,7 +280,7 @@ const logout = async () => {
       })
     },
     (err) => {
-      console.error('用户信息加载失败:', err)
+      console.error('登出失败:', err)
     },
     false,
   )
