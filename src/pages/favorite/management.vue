@@ -7,7 +7,9 @@
     </view>
     <view class="button-group">
       <button class="button move" :disabled="moveDisable" @click="onActiveMove">移动到</button>
-      <button class="button cancelCollection" :disabled="cancelDisable">取消收藏</button>
+      <button class="button cancelCollection" :disabled="cancelDisable" @click="activeRemove">
+        移除
+      </button>
       <button class="button management" :disabled="manageDisable" @click="onActiveManage">
         目录管理
       </button>
@@ -17,7 +19,7 @@
 
 <script setup lang="ts">
 // emit all select
-const emit = defineEmits(['allSelected', 'activeMove', 'activeManage'])
+const emit = defineEmits(['allSelected', 'activeMove', 'activeManage', 'activeRemove'])
 
 // 接受传入值
 const props = defineProps<{
@@ -71,6 +73,11 @@ const onActiveMove = () => {
 // active management
 const onActiveManage = () => {
   emit('activeManage')
+}
+
+// active remove
+const activeRemove = () => {
+  emit('activeRemove')
 }
 </script>
 <style lang="css" scoped>

@@ -7,7 +7,7 @@
     </view>
     <view class="button-group">
       <button class="button move" :disabled="moveDisable" @click="onActiveMove">移动到</button>
-      <button class="button cancelCollection">取消收藏</button>
+      <button class="button cancelCollection">移除</button>
     </view>
   </view>
 </template>

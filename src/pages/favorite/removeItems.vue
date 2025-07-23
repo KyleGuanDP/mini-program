@@ -3,7 +3,7 @@
     <view class="mask"></view>
     <view class="modal">
       <view class="head">
-        <view class="cancel">取消</view>
+        <view class="cancel" @click="close">取消</view>
       </view>
       <view class="options">
         <button class="delete" @click="removeFromFolder">仅从文件夹中删除</button>
@@ -20,6 +20,7 @@ const props = defineProps<{
   items: any
 }>()
 
+const emit = defineEmits(['closeRemove'])
 // 从当前目录下删除
 const removeFromFolder = async () => {
   await removeCollectedItems(props.type, props.items, false)
@@ -40,6 +41,11 @@ const removeFromAll = async () => {
     duration: 2000,
     mask: true,
   })
+}
+
+// close
+const close = () => {
+  emit('closeRemove')
 }
 </script>
 

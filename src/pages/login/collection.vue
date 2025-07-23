@@ -62,6 +62,7 @@
       @allSelected="allSelected"
       @activeMove="activeMoveFunc"
       @activeManage="activeManageFunc"
+      @activeRemove="activeRemovePage"
     />
     <Move
       :type="type"
@@ -86,6 +87,12 @@
       v-if="activeCreate"
       @closeCreateFolder="activeCreateFolder2"
       @createFolder="createEmit"
+    />
+    <removeItems
+      :type="type"
+      :items="selectedCollectionStack"
+      v-if="activeRemove"
+      @closeRemove="activeRemovePage2"
     />
   </view>
   <view v-else>
@@ -133,6 +140,7 @@
 import { getFolder } from '@/utils/getFolders'
 import { getAlbum } from '@/utils/getAlbum'
 import { ref } from 'vue'
+import removeItems from '../favorite/removeItems.vue'
 import management from '../favorite/management.vue'
 import Move from '../favorite/move.vue'
 import ManagementAlbum from '../favorite/managementAlbum.vue'
@@ -150,6 +158,7 @@ const activeIcons = ref<Record<number, boolean>>({})
 const activeMove = ref<boolean>(false)
 const activeManage = ref<boolean>(false)
 const activeCreate = ref<boolean>(false)
+const activeRemove = ref<boolean>(false)
 
 const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
 const page = ref<string>('folder')
@@ -213,6 +222,16 @@ const activeCreateFolder2 = () => {
   activeCreate.value = false
 }
 
+// switch remove to true
+const activeRemovePage = () => {
+  activeRemove.value = true
+}
+
+// switch remove to false
+const activeRemovePage2 = () => {
+  activeRemove.value = false
+}
+
 // get folder
 async function loadFolder(folderId: any | null, folderName?: string | null) {
   await getFolder(type.value, folderId, true, folders, items)
@@ -259,15 +278,21 @@ const allSelected = (value: boolean) => {
 }
 
 // switch page to product
-const toProduct = () => {
+const toProduct = async () => {
+  await loadFolder(null)
   page.value = 'folder'
+  activeIcons.value = {}
+  routes.value = [{ name: '根目录', id: null }]
   selectedFolderStack.value = []
   selectedCollectionStack.value = []
+  await loadFolder(null)
 }
 
 // switch page to album
 const toAlbum = () => {
   page.value = 'Album'
+  routes.value = [{ name: '根目录', id: null }]
+  activeIcons.value = {}
   selectedFolderStack.value = []
   selectedCollectionStack.value = []
 }
