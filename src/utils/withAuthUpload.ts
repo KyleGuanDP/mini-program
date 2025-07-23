@@ -41,7 +41,7 @@ export const withAuthUpload = async (
       if (!refresh) throw new Error('无 refresh_token')
 
       const refreshRes = await uni.request({
-        url: 'http://121.199.10.78:8000/api/v1/auth/refresh_token',
+        url: 'http://121.199.10.78:8001/api/v1/auth/refresh_token',
         method: 'POST',
         header: { Authorization: `Bearer ${refresh}` },
       })

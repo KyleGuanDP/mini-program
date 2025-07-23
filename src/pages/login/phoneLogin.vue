@@ -58,7 +58,7 @@ const onGetPhoneNumber = async (e: any) => {
   const code = loginRes.code
 
   const res = await uni.request({
-    url: 'http://121.199.10.78:8000/api/v1/auth/wechat_login_bind_phone',
+    url: 'http://121.199.10.78:8001/api/v1/auth/wechat_login_bind_phone',
     method: 'POST',
     data: {
       phone_code: e.detail.code,

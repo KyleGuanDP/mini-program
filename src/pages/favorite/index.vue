@@ -29,7 +29,7 @@ const changeCategory = (category) => {
 }
 const getContent = async () => {
   const query = category.value
-  let url = `http://121.199.10.78:8000/api/v1/collections/folders/children?target_type=${query}`
+  let url = `http://121.199.10.78:8001/api/v1/collections/folders/children?target_type=${query}`
 
   if (folder_id.value !== null && folder_id.value !== undefined) {
     url += `&folder_id=${folder_id.value}`

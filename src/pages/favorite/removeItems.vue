@@ -7,45 +7,51 @@
       </view>
       <view class="options">
         <button class="delete" @click="removeFromFolder">仅从文件夹中删除</button>
-        <button class="edit" @click="removeFromAll">取消收藏</button>
+        <button class="edit" @click="activePromptFunc">取消收藏</button>
       </view>
     </view>
   </view>
+  <prompt v-if="activePrompt" @closePrompt="closePromptFunc" @removeAll="removeFromAll" />
 </template>
 
 <script setup lang="ts">
+import prompt from './prompt.vue'
 import { removeCollectedItems } from '@/utils/removeCollectedItems'
+
+const activePrompt = ref(false)
 const props = defineProps<{
   type: any
   items: any
 }>()
 
-const emit = defineEmits(['closeRemove'])
+const emit = defineEmits(['closeRemove', 'removeBack'])
 // 从当前目录下删除
 const removeFromFolder = async () => {
   await removeCollectedItems(props.type, props.items, false)
-  uni.showToast({
-    title: '移除成功',
-    icon: 'success',
-    duration: 2000,
-    mask: true,
-  })
+  emit('closeRemove')
+  emit('removeBack')
 }
 
 // 删除所有的
 const removeFromAll = async () => {
   await removeCollectedItems(props.type, props.items, true)
-  uni.showToast({
-    title: '移除成功',
-    icon: 'success',
-    duration: 2000,
-    mask: true,
-  })
+  emit('closeRemove')
+  emit('removeBack')
 }
 
-// close
+// 打开弹窗
+const activePromptFunc = () => {
+  activePrompt.value = true
+}
+
+// close remove
 const close = () => {
   emit('closeRemove')
+}
+
+// close prompt
+const closePromptFunc = () => {
+  activePrompt.value = false
 }
 </script>
 

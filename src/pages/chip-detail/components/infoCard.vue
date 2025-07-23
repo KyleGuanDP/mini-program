@@ -116,7 +116,7 @@ const styleList = ref({
 
 const showPopup = async () => {
   const res = await addToFolder(
-    'http://121.199.10.78:8000/api/v1/collections/items',
+    'http://121.199.10.78:8001/api/v1/collections/items',
     'product',
     detail.value.pid,
     null,

@@ -127,6 +127,10 @@
       "type": "page"
     },
     {
+      "path": "pages/favorite/addFavorite",
+      "type": "page"
+    },
+    {
       "path": "pages/favorite/createFolder",
       "type": "page"
     },
@@ -163,11 +167,19 @@
       "type": "page"
     },
     {
+      "path": "pages/favorite/moveAlbum",
+      "type": "page"
+    },
+    {
       "path": "pages/favorite/pop",
       "type": "page"
     },
     {
       "path": "pages/favorite/popUp",
+      "type": "page"
+    },
+    {
+      "path": "pages/favorite/prompt",
       "type": "page"
     },
     {
@@ -242,8 +254,32 @@
       "type": "page"
     },
     {
+      "path": "pages/privacy/guide",
+      "type": "page",
+      "style": {
+        "navigationBarTitleText": "用户隐私保护指引"
+      }
+    },
+    {
       "path": "pages/privacy/index",
       "type": "page"
+    },
+    {
+      "path": "pages/privacy/privacy",
+      "type": "page",
+      "style": {
+        "navigationBarTitleText": "隐私协议"
+      }
+    },
+    {
+      "path": "pages/privacy/registration",
+      "type": "page",
+      "style": {
+        "navigationBarTitleText": "用户隐私保护指引"
+      },
+      "style": {
+        "navigationBarTitleText": "用户注册协议"
+      }
     },
     {
       "path": "pages/product/index",

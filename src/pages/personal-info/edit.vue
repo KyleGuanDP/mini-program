@@ -197,7 +197,7 @@ const columnChange = (e: any) => {
 }
 
 const getUserInfo = async () => {
-  let url = `http://121.199.10.78:8000/api/v1/users/me`
+  let url = `http://121.199.10.78:8001/api/v1/users/me`
 
   await withAuthRequest(
     { url, method: 'GET' },
@@ -226,7 +226,7 @@ const getUserInfo = async () => {
 
 // 修改请求
 const edit = async () => {
-  let url = `http://121.199.10.78:8000/api/v1/users/me`
+  let url = `http://121.199.10.78:8001/api/v1/users/me`
   const data = {
     nickname: 'Kyle',
     name: name.value,
@@ -266,7 +266,7 @@ const edit = async () => {
 
 // 登出
 const logout = async () => {
-  let url = `http://121.199.10.78:8000/api/v1/auth/wechat_logout`
+  let url = `http://121.199.10.78:8001/api/v1/auth/wechat_logout`
   await withAuthRequest(
     { url, method: 'POST' },
     (res) => {

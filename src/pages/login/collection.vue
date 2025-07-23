@@ -1,5 +1,5 @@
 <template>
-  <view class="container" v-if="page === 'folder'">
+  <view class="container" v-if="page === 'product'">
     <view class="category">
       <view class="sub-category product" @tap="selectItem" data-name="product">产品</view>
       <view class="sub-category" @tap="selectItem" data-name="technical_paper">技术文章</view>
@@ -93,13 +93,14 @@
       :items="selectedCollectionStack"
       v-if="activeRemove"
       @closeRemove="activeRemovePage2"
+      @removeBack="processEditEmit"
     />
   </view>
   <view v-else>
     <view class="category">
       <view class="sub-category product" @tap="selectItem" data-name="product">产品</view>
-      <view class="sub-category" @tap="selectItem" data-name="paper">技术文章</view>
-      <view class="sub-category" @tap="selectItem" data-name="design">参考设计</view>
+      <view class="sub-category" @tap="selectItem" data-name="technical_paper">技术文章</view>
+      <view class="sub-category" @tap="selectItem" data-name="reference_design">参考设计</view>
     </view>
     <view class="edit">
       <view class="add" @click="toAlbum">专辑</view>
@@ -125,13 +126,21 @@
       v-if="selectedCollectionStack.length"
       @allSelected="allSelected"
       @activeMove="activeMoveFunc"
+      @activeRemove="activeRemovePage"
     />
-    <Move
+    <moveAlbum
       :type="type"
       :selectedCollections="selectedCollectionStack"
       v-if="activeMove"
       @deactivateMove="activeMoveFunc2"
       @getRouters="getRoutes"
+    />
+    <removeItems
+      :type="type"
+      :items="selectedCollectionStack"
+      v-if="activeRemove"
+      @closeRemove="activeRemovePage2"
+      @removeBack="processEditEmit"
     />
   </view>
 </template>
@@ -146,6 +155,7 @@ import Move from '../favorite/move.vue'
 import ManagementAlbum from '../favorite/managementAlbum.vue'
 import manageOption from '../favorite/manageOption.vue'
 import createFolder from '../favorite/createFolder.vue'
+import moveAlbum from '../favorite/moveAlbum.vue'
 //初始化数据
 const folders = ref<any[]>([])
 const items = ref<any[]>([])
@@ -161,7 +171,7 @@ const activeCreate = ref<boolean>(false)
 const activeRemove = ref<boolean>(false)
 
 const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
-const page = ref<string>('folder')
+const page = ref<string>('product')
 const flatItems = ref<any[]>([])
 const loading = ref(false)
 
@@ -187,9 +197,14 @@ function toggleFolderIcon(id: string) {
 }
 
 // 切换type
-function selectItem(e) {
+async function selectItem(e) {
   type.value = e.currentTarget.dataset.name
-  loadFolder(null)
+  routes.value = [{ name: '根目录', id: null }]
+  if (page.value === 'product') {
+    await loadFolder(null)
+  } else {
+    await getAlbum(type.value, flatItems)
+  }
 }
 
 // switch move status to true
@@ -251,10 +266,13 @@ async function loadFolder(folderId: any | null, folderName?: string | null) {
 // }
 
 // 路由
-function goToIndex(index: number) {
+async function goToIndex(index: number) {
   const target = routes.value[index]
   routes.value = routes.value.slice(0, index + 1)
-  getFolder(type.value, target.id, false, folders, items)
+  activeIcons.value = {}
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+  await getFolder(type.value, target.id, false, folders, items)
 }
 
 // 全选
@@ -279,18 +297,22 @@ const allSelected = (value: boolean) => {
 
 // switch page to product
 const toProduct = async () => {
-  await loadFolder(null)
-  page.value = 'folder'
+  type.value = 'product'
+  page.value = 'product'
+  flatItems.value = []
   activeIcons.value = {}
   routes.value = [{ name: '根目录', id: null }]
   selectedFolderStack.value = []
   selectedCollectionStack.value = []
+  console.log(items.value)
   await loadFolder(null)
 }
 
 // switch page to album
-const toAlbum = () => {
+const toAlbum = async () => {
+  type.value = 'product'
   page.value = 'Album'
+  await getAlbum(type.value, flatItems)
   routes.value = [{ name: '根目录', id: null }]
   activeIcons.value = {}
   selectedFolderStack.value = []
@@ -314,7 +336,7 @@ const getRoutes = async (route: Array<{ name: string; id: string | null }>) => {
   uni.hideLoading()
 }
 
-// edit pass
+// edit move and remove emit
 const processEditEmit = async () => {
   uni.showLoading({
     title: '加载中...',
@@ -322,7 +344,11 @@ const processEditEmit = async () => {
   })
 
   const route = routes.value
-  await loadFolder(route.at(-1).id)
+  if (page.value === 'product') {
+    await loadFolder(route.at(-1).id)
+  } else {
+    await getAlbum(type.value, flatItems)
+  }
   activeManage.value = false
   activeIcons.value = {}
   selectedFolderStack.value = []
@@ -351,8 +377,7 @@ const createEmit = async () => {
 onShow(() => {
   routes.value = [{ name: '根目录', id: null }]
   type.value = 'product'
-  page.value = 'folder'
-  getAlbum(type.value, flatItems)
+  page.value = 'product'
   loadFolder(null)
 })
 </script>
@@ -391,11 +416,10 @@ onShow(() => {
 
 .main {
   margin-top: 10rpx;
-  flex: 1;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
 }
 
 .edit {
@@ -404,11 +428,6 @@ onShow(() => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
-
-.content {
-  flex: 1;
-  width: 98%;
 }
 
 .route {

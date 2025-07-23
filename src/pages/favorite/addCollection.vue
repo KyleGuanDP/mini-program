@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { addToFolder } from '../../utils/addToFolder'
+// import { addToFolder } from '../../utils/addToFolder'
 import { ref, onMounted, defineEmits, defineProps } from 'vue'
 import { withAuthRequest } from '@/utils/withAuthRequest'
 // receive parameters
@@ -59,7 +59,7 @@ const getFolder = async (
   folderId: string | null,
   shouldPush: boolean = true,
 ) => {
-  let url = `http://121.199.10.78:8000/api/v1/collections/folders/children?target_type=${typeValue}`
+  let url = `http://121.199.10.78:8001/api/v1/collections/folders/children?target_type=${typeValue}`
   if (folderId !== null) {
     url += `&folder_id=${folderId}`
   }
@@ -106,7 +106,7 @@ onMounted(() => {
   top: 0;
   left: 0;
   z-index: 999;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
   display: flex;

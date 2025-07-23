@@ -6,7 +6,7 @@ export const moveFolders = async (
   itemIDs: number[],
   target_folder_id: number,
 ) => {
-  let url = `http://121.199.10.78:8000/api/v1/collections/folders/move?target_type=${typeValue}`
+  let url = `http://121.199.10.78:8001/api/v1/collections/folders/move?target_type=${typeValue}`
 
   console.log('请求 URL:', url)
 

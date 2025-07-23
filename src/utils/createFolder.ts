@@ -2,7 +2,7 @@
 import { withAuthRequest } from '@/utils/withAuthRequest'
 
 export const createFolder = async (typeValue: string, folderId: any, name: any) => {
-  let url = `http://121.199.10.78:8000/api/v1/collections/folders?target_type=${typeValue}`
+  let url = `http://121.199.10.78:8001/api/v1/collections/folders?target_type=${typeValue}`
   const data = {
     name: name,
     parent_id: folderId,

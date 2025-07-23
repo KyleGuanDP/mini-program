@@ -120,7 +120,7 @@ const login = async () => {
   console.log('this is code', loginRes.code)
 
   const res = await uni.request({
-    url: 'http://121.199.10.78:8000/api/v1/auth/wechat_login',
+    url: 'http://121.199.10.78:8001/api/v1/auth/wechat_login',
     method: 'POST',
     data: {
       code: loginRes.code,
@@ -158,7 +158,7 @@ const tokenPrint = () => {
 const getUserInfo = async () => {
   const token = uni.getStorageSync('token')
   const res = await uni.request({
-    url: 'http://121.199.10.78:8000/api/v1/users/me',
+    url: 'http://121.199.10.78:8001/api/v1/users/me',
     method: 'GET',
     header: {
       Authorization: `Bearer ${token}`,
@@ -170,7 +170,7 @@ const getUserInfo = async () => {
   } else if (res.statusCode === 401) {
     const refreshToken = uni.getStorageSync('refresh')
     const refreshRes = await uni.request({
-      url: 'http://121.199.10.78:8000/api/v1/auth/refresh_token',
+      url: 'http://121.199.10.78:8001/api/v1/auth/refresh_token',
       method: 'POST',
       header: {
         Authorization: `Bearer ${refreshToken}`,

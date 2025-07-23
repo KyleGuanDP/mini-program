@@ -7,14 +7,14 @@
     </view>
     <view class="button-group">
       <button class="button move" :disabled="moveDisable" @click="onActiveMove">移动到</button>
-      <button class="button cancelCollection">移除</button>
+      <button class="button cancelCollection" @click="onActiveRemove">移除</button>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 // emit all select
-const emit = defineEmits(['allSelected', 'activeMove'])
+const emit = defineEmits(['allSelected', 'activeMove', 'activeRemove'])
 
 // 接受传入值
 const props = defineProps<{
@@ -54,6 +54,11 @@ const toggleAllSelected = () => {
 // active move
 const onActiveMove = () => {
   emit('activeMove')
+}
+
+// activeRemove
+const onActiveRemove = () => {
+  emit('activeRemove')
 }
 </script>
 <style lang="css" scoped>

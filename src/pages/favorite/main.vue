@@ -25,7 +25,7 @@ const getNodesInfo = async () => {
 
   try {
     const res = await uni.request({
-      url: `http://121.199.10.78:8000/api/v1/collections/folders/full-tree?target_type=${query}`,
+      url: `http://121.199.10.78:8001/api/v1/collections/folders/full-tree?target_type=${query}`,
       method: 'GET',
       header: { Authorization: `Bearer ${token}` },
     })
@@ -53,7 +53,7 @@ const handleAdd = async ({ parent_id, name }) => {
 
   try {
     const res = await uni.request({
-      url: `http://121.199.10.78:8000/api/v1/collections/folders?target_type=${query}`,
+      url: `http://121.199.10.78:8001/api/v1/collections/folders?target_type=${query}`,
       method: 'POST',
       header: { Authorization: `Bearer ${token}` },
       data: { parent_id, name },
@@ -75,7 +75,7 @@ const handleRemove = async ({ id }) => {
 
   try {
     await uni.request({
-      url: `http://121.199.10.78:8000/api/v1/collections/folders/${id}/?target_type=${query}`,
+      url: `http://121.199.10.78:8001/api/v1/collections/folders/${id}/?target_type=${query}`,
       method: 'DELETE',
       header: { Authorization: `Bearer ${token}` },
     })

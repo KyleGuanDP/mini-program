@@ -6,18 +6,9 @@
       <view class="head">
         <view class="cancel" @click="cancel">取消</view>
         <view class="move">Move</view>
-        <view class="create" @click="activeCreateFolder">新建目录</view>
+        <view class="create">新建目录</view>
       </view>
-      <view class="route">
-        <view
-          class="specific-route"
-          v-for="(route, index) in routes"
-          :key="index"
-          @click="goToIndex(index)"
-        >
-          {{ route.name }} >
-        </view>
-      </view>
+
       <scroll-view scroll-y class="content">
         <view class="folders">
           <view class="folder-name" v-for="folder in folders" :key="folder.id">
@@ -44,13 +35,6 @@
       <view class="confirm" @click="handleMove()">移动到此处</view>
     </view>
   </view>
-  <createFolder
-    :type="type"
-    :parentId="routes"
-    v-if="activeCreate"
-    @closeCreateFolder="activeCreateFolder2"
-    @createFolder="createEmit"
-  />
 </template>
 
 <script setup lang="ts">
@@ -58,7 +42,6 @@ import { moveElements } from '@/utils/moveElements'
 import { moveFolders } from '@/utils/moveFolders'
 import { ref, onMounted } from 'vue'
 import { getFolder } from '@/utils/getFolders'
-import createFolder from './createFolder.vue'
 const emit = defineEmits<{
   (e: 'deactivateMove'): void
   (e: 'getRouters', value: Array<{ name: string; id: string | null }>): void
@@ -69,9 +52,6 @@ const props = defineProps<{ type: string; selectedCollections: any; selectedFold
 const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
 const folders = ref<any[]>([])
 const items = ref<any[]>([])
-
-const activeCreate = ref(false)
-
 // const folderStack = ref<(string | null)[]>([])
 // 点击路径跳转
 function goToIndex(index: number) {
@@ -116,21 +96,6 @@ const handleMove = () => {
   move(props.type, props.selectedCollections, routes, props.selectedFolders)
 }
 
-// active create
-const activeCreateFolder = () => {
-  activeCreate.value = true
-}
-
-// switch createFolder to false
-const activeCreateFolder2 = () => {
-  activeCreate.value = false
-}
-
-const createEmit = async () => {
-  const target = routes.value.at(-1).id
-  await getFolder(props.type, target, false, folders, items)
-  activeCreate.value = false
-}
 onMounted(() => {
   routes.value = [{ name: '根目录', id: null }]
   loadFolder(null)
@@ -139,8 +104,8 @@ onMounted(() => {
 
 <style scoped>
 /* [class] {
-  border: 1rpx solid;
-} */
+    border: 1rpx solid;
+  } */
 .container {
   position: fixed;
   top: 0;

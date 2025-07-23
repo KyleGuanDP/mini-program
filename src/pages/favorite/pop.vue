@@ -17,7 +17,7 @@ const nodes = ref<any>([])
 const getNodesInfo = async () => {
   const token = uni.getStorageSync('token')
   const res = await uni.request({
-    url: `http://121.199.10.78:8000/api/v1/collections/folders/tree?target_type=product`,
+    url: `http://121.199.10.78:8001/api/v1/collections/folders/tree?target_type=product`,
     method: 'GET',
     header: { Authorization: `Bearer ${token}` },
   })

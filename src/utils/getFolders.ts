@@ -8,7 +8,7 @@ export const getFolder = async (
   foldersRef: Ref<any[]>,
   itemsRef: Ref<any[]>,
 ) => {
-  let url = `http://121.199.10.78:8000/api/v1/collections/folders/children?target_type=${typeValue}`
+  let url = `http://121.199.10.78:8001/api/v1/collections/folders/children?target_type=${typeValue}`
 
   if (folderId !== null) {
     url += `&folder_id=${folderId}`

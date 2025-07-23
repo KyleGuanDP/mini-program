@@ -29,6 +29,9 @@
       <view class="mine">
         <view class="about">关于lumy</view>
       </view>
+      <view class="mine">
+        <view class="about" @click="toPrivacy">隐私保护</view>
+      </view>
     </view>
   </view>
 </template>
@@ -40,6 +43,11 @@ import { withAuthRequest } from '@/utils/withAuthRequest'
 const status = ref(false)
 const userName = ref('游客')
 const avatarUrl = ref('../../static/images/cxtd.png')
+
+// 跳转到隐私选择页
+const toPrivacy = () => {
+  uni.navigateTo({ url: '/pages/privacy/index' })
+}
 
 // 点击头像选择
 const onChooseAvatar = (e: any) => {
@@ -67,7 +75,7 @@ const getUserProfile = () => {
 const login = async () => {
   const loginRes = await uni.login()
   const res = await uni.request({
-    url: 'http://121.199.10.78:8000/api/v1/auth/wechat_login',
+    url: 'http://121.199.10.78:8001/api/v1/auth/wechat_login',
     method: 'POST',
     data: {
       code: loginRes.code,
@@ -85,7 +93,7 @@ const login = async () => {
     uni.setStorageSync('refresh', data.refresh_token)
 
     uni.setStorageSync('status', true)
-    await getPersonalInfo('http://121.199.10.78:8000/')
+    await getPersonalInfo('http://121.199.10.78:8001/')
     uni.showToast({ title: '登录成功' })
   }
 }
@@ -133,7 +141,7 @@ const download = async (url: string) => {
       if (res.statusCode === 200) {
         withAuthUpload(
           {
-            url: 'http://121.199.10.78:8000/api/v1/users/me/avatar',
+            url: 'http://121.199.10.78:8001/api/v1/users/me/avatar',
             uploadMode: true,
             filePath: res.tempFilePath,
             method: 'PUT',
@@ -183,7 +191,7 @@ const getPersonalInfo = async (head: string) => {
 }
 
 onShow(async () => {
-  await getPersonalInfo('http://121.199.10.78:8000/')
+  await getPersonalInfo('http://121.199.10.78:8001/')
   console.log('主页面加载')
 })
 </script>
