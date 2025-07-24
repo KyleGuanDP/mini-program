@@ -44,8 +44,34 @@ const deActivate = () => {
 // handle complete
 const complete = async () => {
   console.log('new name', inputValue.value)
-  await editFolderName(props.type, props.selectedFolders[0], inputValue.value)
-  emit('editEmit')
+  uni.showLoading({
+    title: '加载中...',
+    mask: true,
+  })
+  const res = await editFolderName(props.type, props.selectedFolders[0], inputValue.value)
+  console.log('this is edit folder name res', res.statusCode)
+  uni.hideLoading()
+
+  if (res.statusCode === 200) {
+    uni.showToast({ title: '编辑成功', icon: 'success' })
+  } else {
+    uni.showToast({ title: '编辑失败', icon: 'error' })
+  }
+  setTimeout(() => {
+    emit('editEmit')
+  }, 1000)
+  // if (res.statusCode === 200) {
+  //   uni.showModal({
+  //     title: '修改成功',
+  //     showCancel: false,
+  //   })
+  // } else {
+  //   uni.showModal({
+  //     title: '修改失败',
+  //     showCancel: false,
+  //   })
+  // }
+  // emit('editEmit')
 }
 </script>
 <style lang="css" scoped>

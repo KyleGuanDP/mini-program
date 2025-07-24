@@ -7,20 +7,13 @@ export const removeCollectedItems = async (typeValue: string, folderId: any, rem
     item_ids: folderId,
     target_remove: remove,
   }
-  await withAuthRequest(
+  return await withAuthRequest(
     { url, method: 'DELETE', data },
     (res) => {
       const data = res.data as any
       console.log('this is remove feedback', data)
       console.log('this is remove feedback statuscode', data.statusCode)
-      if (data.statusCode === 200) {
-        uni.showToast({
-          title: '移除成功',
-          icon: 'success',
-          duration: 2000,
-          mask: true,
-        })
-      }
+      return res
     },
     (err) => {
       console.warn('删除收藏项失败', err)

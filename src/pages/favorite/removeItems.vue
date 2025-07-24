@@ -27,16 +27,40 @@ const props = defineProps<{
 const emit = defineEmits(['closeRemove', 'removeBack'])
 // 从当前目录下删除
 const removeFromFolder = async () => {
-  await removeCollectedItems(props.type, props.items, false)
-  emit('closeRemove')
-  emit('removeBack')
+  uni.showLoading({
+    title: '加载中...',
+    mask: true,
+  })
+  const res = await removeCollectedItems(props.type, props.items, false)
+  uni.hideLoading()
+  if (res.statusCode === 200) {
+    uni.showToast({ title: '移动成功', icon: 'success' })
+  } else {
+    uni.showToast({ title: '移动失败', icon: 'error' })
+  }
+  setTimeout(() => {
+    emit('closeRemove')
+    emit('removeBack')
+  }, 1000)
 }
 
 // 删除所有的
 const removeFromAll = async () => {
-  await removeCollectedItems(props.type, props.items, true)
-  emit('closeRemove')
-  emit('removeBack')
+  uni.showLoading({
+    title: '加载中...',
+    mask: true,
+  })
+  const res = await removeCollectedItems(props.type, props.items, true)
+  uni.hideLoading()
+  if (res.statusCode === 200) {
+    uni.showToast({ title: '移动成功', icon: 'success' })
+  } else {
+    uni.showToast({ title: '移动失败', icon: 'error' })
+  }
+  setTimeout(() => {
+    emit('closeRemove')
+    emit('removeBack')
+  }, 1000)
 }
 
 // 打开弹窗

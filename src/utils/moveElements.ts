@@ -15,11 +15,12 @@ export const moveElements = async (
     target_folder_id: target_folder_id,
   }
   console.log('this is move data', data)
-  await withAuthRequest(
+  return await withAuthRequest(
     { url, method: 'PUT', data },
     (res) => {
       const data = res.data as any
       console.log(data)
+      return res
     },
     (err) => {
       console.warn('移动文件夹失败', err)

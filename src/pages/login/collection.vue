@@ -28,10 +28,10 @@
       <scroll-view scroll-y class="content">
         <view class="folders">
           <view class="folder-name" v-for="folder in folders" :key="folder.id">
-            <view class="folder-image" @click="loadFolder(folder.id, folder.name)">
+            <view class="folder-image" @click="clickFolderAndImage(folder.id, folder.name)">
               <image src="../../static/images/folder.png" mode="scaleToFill" />
             </view>
-            <view @click="loadFolder(folder.id, folder.name)">{{ folder.name }}</view>
+            <view @click="clickFolderAndImage(folder.id, folder.name)">{{ folder.name }}</view>
             <view
               class="icon"
               :class="{ active: activeIcons[folder.id] }"
@@ -124,7 +124,7 @@
     <ManagementAlbum
       :selectedItems="selectedCollectionStack"
       v-if="selectedCollectionStack.length"
-      @allSelected="allSelected"
+      @allSelected="allSelectedFlat"
       @activeMove="activeMoveFunc"
       @activeRemove="activeRemovePage"
     />
@@ -249,12 +249,22 @@ const activeRemovePage2 = () => {
 
 // get folder
 async function loadFolder(folderId: any | null, folderName?: string | null) {
-  await getFolder(type.value, folderId, true, folders, items)
+  const res = await getFolder(type.value, folderId, true, folders, items)
   console.log(items.value)
   const lastRoute = routes.value.at(-1)
   if (folderName && lastRoute?.name !== folderName) {
     routes.value.push({ name: folderName, id: folderId })
   }
+
+  return res
+}
+
+// to next folder
+const clickFolderAndImage = async (folderId: any | null, folderName?: string | null) => {
+  await loadFolder(folderId, folderName)
+  activeIcons.value = {}
+  selectedCollectionStack.value = []
+  selectedFolderStack.value = []
 }
 
 // // 返回上一级
@@ -295,6 +305,21 @@ const allSelected = (value: boolean) => {
   }
 }
 
+// active flat
+const allSelectedFlat = (value: boolean) => {
+  if (value) {
+    activeIcons.value = {}
+
+    for (const item of flatItems.value) {
+      activeIcons.value[item.id] = true
+      selectedCollectionStack.value.push(item.id)
+    }
+  } else {
+    activeIcons.value = {}
+    selectedCollectionStack.value = []
+  }
+}
+
 // switch page to product
 const toProduct = async () => {
   type.value = 'product'
@@ -326,7 +351,7 @@ const getRoutes = async (route: Array<{ name: string; id: string | null }>) => {
     title: '加载中...',
     mask: true,
   })
-  await loadFolder(route.at(-1).id, route.at(-1).name)
+  const res = await loadFolder(route.at(-1).id, route.at(-1).name)
   routes.value = route
   activeMove.value = false
   activeIcons.value = {}
@@ -334,8 +359,13 @@ const getRoutes = async (route: Array<{ name: string; id: string | null }>) => {
   selectedCollectionStack.value = []
   // loading.value = false
   uni.hideLoading()
+  // console.log(res.statusCode)
+  // if (res.statusCode === 200) {
+  //   uni.showToast({ title: '收藏成功', icon: 'success' })
+  // } else {
+  //   uni.showToast({ title: '收藏失败', icon: 'error' })
+  // }
 }
-
 // edit move and remove emit
 const processEditEmit = async () => {
   uni.showLoading({

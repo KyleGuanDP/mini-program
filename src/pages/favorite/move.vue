@@ -107,9 +107,17 @@ const move = async (
   let targetId = null
   if (lastRoute.id) targetId = lastRoute.id
 
-  await moveFolders(type, selectedFolders, targetId)
-  await moveElements(type, selectedItems, targetId)
-  emit('getRouters', routeValue)
+  const res = await moveFolders(type, selectedFolders, targetId)
+  const res2 = await moveElements(type, selectedItems, targetId)
+  console.log('this is move status log', res.statusCode, res2.statusCode)
+  if (res.statusCode === 200 && res2.statusCode === 200) {
+    uni.showToast({ title: '移动成功', icon: 'success' })
+  } else {
+    uni.showToast({ title: '移动失败', icon: 'error' })
+  }
+  setTimeout(() => {
+    emit('getRouters', routeValue)
+  }, 1000)
 }
 
 const handleMove = () => {

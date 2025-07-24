@@ -41,7 +41,7 @@
         "iconPath": "static/tabbar/ai.png",
         "selectedIconPath": "static/tabbar/ai_activate.png",
         "pagePath": "pages/login/center",
-        "text": "AI咨询"
+        "text": "个人中心"
       }
     ]
   },
@@ -255,10 +255,7 @@
     },
     {
       "path": "pages/privacy/guide",
-      "type": "page",
-      "style": {
-        "navigationBarTitleText": "用户隐私保护指引"
-      }
+      "type": "page"
     },
     {
       "path": "pages/privacy/index",
@@ -266,20 +263,11 @@
     },
     {
       "path": "pages/privacy/privacy",
-      "type": "page",
-      "style": {
-        "navigationBarTitleText": "隐私协议"
-      }
+      "type": "page"
     },
     {
       "path": "pages/privacy/registration",
-      "type": "page",
-      "style": {
-        "navigationBarTitleText": "用户隐私保护指引"
-      },
-      "style": {
-        "navigationBarTitleText": "用户注册协议"
-      }
+      "type": "page"
     },
     {
       "path": "pages/product/index",

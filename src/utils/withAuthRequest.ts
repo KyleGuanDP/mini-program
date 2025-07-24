@@ -1,6 +1,6 @@
 export const withAuthRequest = async (
   requestOptions: UniApp.RequestOptions,
-  onSuccess: (res: UniApp.RequestSuccessCallbackResult) => void,
+  onSuccess: (res: UniApp.RequestSuccessCallbackResult) => any, // 👈 让回调返回内容
   onFail?: (err: any) => void,
   silent: boolean = true,
 ) => {
@@ -21,7 +21,7 @@ export const withAuthRequest = async (
     })
 
     if (res.statusCode === 200) {
-      onSuccess(res)
+      return onSuccess(res) // 👈 加上 return
     } else if (res.statusCode === 401) {
       const refresh = uni.getStorageSync('refresh')
       if (!refresh) throw new Error('无 refresh_token')
@@ -50,14 +50,16 @@ export const withAuthRequest = async (
         })
 
         if (res.statusCode === 200) {
-          onSuccess(res)
+          return onSuccess(res) // 👈 关键也要 return 这里的
         } else {
           console.error('刷新后仍失败:', res)
+          onFail?.(res)
         }
       } else {
         console.error('refresh_token 失效，重新登录')
         uni.removeStorageSync('token')
         uni.removeStorageSync('refresh')
+        onFail?.(refreshRes)
       }
     } else {
       console.error(`请求失败 (${res.statusCode})`)
