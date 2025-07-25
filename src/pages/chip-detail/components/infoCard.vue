@@ -84,7 +84,7 @@
           <view class="text1" style="color: #e65925">邮件</view>
         </view>
         <view class="flex items-center">
-          <image class="icon2" src="@/static/images/chip-detail/email.png" mode="scaleToFill" />
+          <image class="icon2" src="@/static/images/collection.png" mode="scaleToFill" />
           <view class="text1" style="color: #e65925" @click="showPopup">收藏</view>
         </view>
       </view>

@@ -39,11 +39,18 @@ export const addToFolder = async (
       return res
     },
     (err) => {
-      console.error('添加到文件夹失败:', err)
-      uni.showToast({
-        title: '收藏失败',
-        icon: 'none',
-      })
+      console.error('添加到文件夹失败:', err.statusCode)
+      if (err.statusCode === 400) {
+        uni.showToast({
+          title: '收藏已存在',
+          icon: 'none',
+        })
+      } else {
+        uni.showToast({
+          title: '收藏失败',
+          icon: 'none',
+        })
+      }
     },
   )
 }

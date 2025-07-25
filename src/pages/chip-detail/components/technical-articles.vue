@@ -28,8 +28,8 @@
         @click="openFileByUrl(item)"
       />
       <image
-        class="icon3"
-        src="@/static/images/chip-detail/pdf1.png"
+        class="icon4"
+        src="@/static/images/collection.png"
         mode="scaleToFill"
         @click="showPopup(item)"
       />
@@ -140,6 +140,14 @@ const addV = () => {
       width: 80rpx;
       min-width: 80rpx;
       height: 48rpx;
+      margin-left: 10rpx;
+      margin-right: 10rpx;
+    }
+
+    .icon4 {
+      width: 30rpx;
+      min-width: 30rpx;
+      height: 30rpx;
       margin-left: 10rpx;
       margin-right: 10rpx;
     }

@@ -88,7 +88,7 @@
               />
               <image
                 class="icon2"
-                src="@/static/images/chip-detail/gwc.png"
+                src="@/static/images/collection.png"
                 mode="scaleToFill"
                 @click="showPopup(item)"
               />
