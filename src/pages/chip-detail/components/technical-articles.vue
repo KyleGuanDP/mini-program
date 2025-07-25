@@ -8,13 +8,31 @@
 </route>
 
 <template>
+  <moveInfoCard
+    :type="'technical_paper'"
+    :selectedCollections="item_id"
+    v-if="addVisible"
+    @deactivateMove="clockPopUp"
+  />
+  <pop-up v-if="visible" @change="addV" />
   <view class="tab2">
-    <view class="list-item" v-for="item in showList" :key="item" @click="openFileByUrl(item)">
+    <view class="list-item" v-for="item in showList" :key="item">
       <view class="line"></view>
       <view class="text4">
         {{ item.name || '-' }}
       </view>
-      <image class="icon3" src="@/static/images/chip-detail/pdf1.png" mode="scaleToFill" />
+      <image
+        class="icon3"
+        src="@/static/images/chip-detail/pdf1.png"
+        mode="scaleToFill"
+        @click="openFileByUrl(item)"
+      />
+      <image
+        class="icon3"
+        src="@/static/images/chip-detail/pdf1.png"
+        mode="scaleToFill"
+        @click="showPopup(item)"
+      />
     </view>
     <view class="list-item" v-if="!showList?.length">
       <view class="text4">暂无数据~</view>
@@ -43,14 +61,22 @@
 
 <script lang="ts" setup>
 import { downloadFile } from '@/utils/download'
+import { addToFolder } from '@/utils/addToFolder'
+import moveInfoCard from '@/pages/favorite/moveInfoCard.vue'
+import popUp from '@/pages/favorite/popUp.vue'
 const props = defineProps({
   data: {
     type: Object,
     default: () => ({}),
   },
 })
+
 const detail = toRef(props, 'data')
 const showAllList = ref(false)
+const item_id = ref([])
+const visible = ref(false)
+const addVisible = ref(false)
+
 const showList = computed(() => {
   detail.value.technical_paper_file = detail.value.technical_paper_file ?? []
   return showAllList.value
@@ -60,6 +86,33 @@ const showList = computed(() => {
 const openFileByUrl = (item: any) => {
   console.log('item', item)
   downloadFile(item?.path, item?.name)
+}
+
+// 收藏
+const showPopup = async (item?: any) => {
+  const res = await addToFolder(
+    'http://121.199.10.78:8001/api/v1/collections/items',
+    'technical_paper',
+    item.name,
+    null,
+    item.name,
+    item?.path,
+  )
+
+  item_id.value.push(res.data.id)
+  // console.log('这是收藏之后的id', res.data.id)
+  visible.value = true
+  setTimeout(() => {
+    visible.value = false
+  }, 3000) // 3秒自动消失
+}
+
+const clockPopUp = () => {
+  addVisible.value = false
+}
+
+const addV = () => {
+  addVisible.value = true
 }
 </script>
 

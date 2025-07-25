@@ -8,6 +8,13 @@
 </route>
 
 <template>
+  <moveInfoCard
+    :type="'reference_design'"
+    :selectedCollections="item_id"
+    v-if="addVisible"
+    @deactivateMove="clockPopUp"
+  />
+  <pop-up v-if="visible" @change="addV" />
   <view class="tab2">
     <view class="list-items" :class="show1 ? 'pb-20rpx' : ''">
       <view class="list-items-top" @click="show1 = !show1">
@@ -67,18 +74,24 @@
       </view>
       <view class="text4-wrapper" :class="show2 ? 'expanded' : 'collapsed'">
         <view class="list-content list-content2" v-if="show2">
-          <view
-            class="list1"
-            v-for="item in detail.reference_design_file"
-            :key="item.name"
-            @click="openFileByUrl(item)"
-          >
+          <view class="list1" v-for="item in detail.reference_design_file" :key="item.name">
             <view class="img">
               <image class="icon" src="@/static/images/chip-detail/design.png" mode="scaleToFill" />
             </view>
             <div class="list1-center">
               <view class="text1" style="color: #666666">{{ item.name || '-' }}</view>
-              <image class="icon2" src="@/static/images/chip-detail/gwc.png" mode="scaleToFill" />
+              <image
+                class="icon2"
+                src="@/static/images/chip-detail/gwc.png"
+                mode="scaleToFill"
+                @click="openFileByUrl(item)"
+              />
+              <image
+                class="icon2"
+                src="@/static/images/chip-detail/gwc.png"
+                mode="scaleToFill"
+                @click="showPopup(item)"
+              />
             </div>
           </view>
           <view class="text3" v-if="!detail.reference_design_file?.length">暂无数据~</view>
@@ -152,6 +165,10 @@
 </template>
 
 <script lang="ts" setup>
+import { addToFolder } from '@/utils/addToFolder'
+import moveInfoCard from '@/pages/favorite/moveInfoCard.vue'
+import popUp from '@/pages/favorite/popUp.vue'
+
 const props = defineProps({
   data: {
     type: Object,
@@ -162,6 +179,9 @@ const detail = toRef(props, 'data')
 const show1 = ref(false)
 const show2 = ref(false)
 const show3 = ref(false)
+const item_id = ref([])
+const visible = ref(false)
+const addVisible = ref(false)
 
 const openFileByUrl = (item: any) => {
   console.log('item', item)
@@ -198,6 +218,35 @@ const copy = () => {
       })
     },
   })
+}
+
+// 收藏
+const showPopup = async (item?: any) => {
+  const res = await addToFolder(
+    'http://121.199.10.78:8001/api/v1/collections/items',
+    'reference_design',
+    item.name,
+    null,
+    item.name,
+    item?.path,
+  )
+
+  console.log('这是我的设计文档的path', item?.path, '这是我的name', item.name)
+
+  item_id.value.push(res.data.id)
+  // console.log('这是收藏之后的id', res.data.id)
+  visible.value = true
+  setTimeout(() => {
+    visible.value = false
+  }, 3000) // 3秒自动消失
+}
+
+const clockPopUp = () => {
+  addVisible.value = false
+}
+
+const addV = () => {
+  addVisible.value = true
 }
 </script>
 

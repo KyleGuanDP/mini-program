@@ -181,6 +181,7 @@ const getPersonalInfo = async (head: string) => {
       console.log('this is res of getPersonal Info', res)
       const data = res.data as any
       avatarUrl.value = head + 'api/v1/files/download?path=' + data.avatar_url
+      userName.value = data.name
     },
     (err) => {
       console.log('出发了获取信息报错流程')
@@ -189,6 +190,11 @@ const getPersonalInfo = async (head: string) => {
     },
   )
 }
+
+// // 修改个人昵称
+// const editName = (name: any) => {
+//   userName.value = name
+// }
 
 onShow(async () => {
   await getPersonalInfo('http://121.199.10.78:8001/')

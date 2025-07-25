@@ -8,7 +8,12 @@
 </route>
 
 <template>
-  <add-collection v-if="addVisible" @change="addV2" :detail="detail" />
+  <moveInfoCard
+    :type="'product'"
+    :selectedCollections="item_id"
+    v-if="addVisible"
+    @deactivateMove="clockPopUp"
+  />
   <pop-up v-if="visible" @change="addV" />
   <view class="list-card">
     <view class="flex items-start">
@@ -91,7 +96,7 @@
 import { addToFolder } from '../../../utils/addToFolder'
 import { downloadFile } from '@/utils/download'
 import popUp from '@/pages/favorite/popUp.vue'
-import addCollection from '@/pages/favorite/addCollection.vue'
+import moveInfoCard from '@/pages/favorite/moveInfoCard.vue'
 // 弹窗1
 const visible = ref(false)
 // 弹窗2
@@ -105,7 +110,7 @@ const addV2 = () => {
   addVisible.value = false
 }
 // item_id
-const item_id = ref('')
+const item_id = ref([])
 const styleList = ref({
   新产品: 'background: #E65925;',
   正在供货: 'background: #21C55E;',
@@ -124,7 +129,8 @@ const showPopup = async () => {
     detail.value.datasheet_file,
   )
 
-  console.log(res)
+  item_id.value.push(res.data.id)
+  // console.log('这是收藏之后的id', res.data.id)
   visible.value = true
   setTimeout(() => {
     visible.value = false
@@ -157,6 +163,11 @@ const openFile = (item: any) => {
   //   url: `/pages/pdf/index?src=${item?.datasheet_file}&title=${item?.part_number || ''}`,
   // })
   //
+}
+
+// closeMovePop
+const clockPopUp = () => {
+  addVisible.value = false
 }
 </script>
 

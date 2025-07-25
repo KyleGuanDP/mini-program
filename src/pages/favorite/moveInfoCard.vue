@@ -55,19 +55,16 @@
 
 <script setup lang="ts">
 import { moveElements } from '@/utils/moveElements'
-import { moveFolders } from '@/utils/moveFolders'
 import { ref, onMounted } from 'vue'
 import { getFolder } from '@/utils/getFolders'
 import createFolder from './createFolder.vue'
 const emit = defineEmits<{
   (e: 'deactivateMove'): void
-  (e: 'getRouters', value: Array<{ name: string; id: string | null }>): void
 }>()
 
 const props = defineProps<{
   type: string
   selectedCollections: any
-  selectedFolders?: any
 }>()
 
 const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
@@ -104,29 +101,23 @@ const move = async (
   type: string,
   selectedItems: any[],
   route: Ref<{ name: string; id: string | null }[]>,
-  selectedFolders: any[],
 ) => {
   const routeValue = route.value
   const lastRoute = routeValue.at(-1)
   let targetId = null
   if (lastRoute.id) targetId = lastRoute.id
-
-  const res = await moveFolders(type, selectedFolders, targetId)
   const res2 = await moveElements(type, selectedItems, targetId)
-  console.log('this is move status log', res.statusCode, res2.statusCode)
-  if (res.statusCode === 200 && res2.statusCode === 200) {
-    uni.showToast({ title: '移动成功', icon: 'success' })
+  console.log(res2.statusCode)
+  if (res2.statusCode === 200) {
+    uni.showToast({ title: '收藏成功', icon: 'success' })
   } else {
-    uni.showToast({ title: '移动失败', icon: 'error' })
+    uni.showToast({ title: '收藏失败', icon: 'error' })
   }
-  setTimeout(() => {
-    emit('getRouters', routeValue)
-  }, 1000)
 }
 
-const handleMove = () => {
-  console.log('这是传过来的type', props.type)
-  move(props.type, props.selectedCollections, routes, props.selectedFolders)
+const handleMove = async () => {
+  await move(props.type, props.selectedCollections, routes)
+  emit('deactivateMove')
 }
 
 // active create
@@ -152,8 +143,8 @@ onMounted(() => {
 
 <style scoped>
 /* [class] {
-  border: 1rpx solid;
-} */
+    border: 1rpx solid;
+  } */
 .container {
   position: fixed;
   top: 0;

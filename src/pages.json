@@ -41,7 +41,7 @@
         "iconPath": "static/tabbar/ai.png",
         "selectedIconPath": "static/tabbar/ai_activate.png",
         "pagePath": "pages/login/center",
-        "text": "个人中心"
+        "text": "AI咨询"
       }
     ]
   },
@@ -168,6 +168,10 @@
     },
     {
       "path": "pages/favorite/moveAlbum",
+      "type": "page"
+    },
+    {
+      "path": "pages/favorite/moveInfoCard",
       "type": "page"
     },
     {

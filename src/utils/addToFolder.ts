@@ -24,32 +24,26 @@ export const addToFolder = async (
     folder_id: folderId,
   }
 
-  return new Promise((resolve, reject) => {
-    withAuthRequest(
-      {
-        url,
-        method: 'POST',
-        data,
-        header: {
-          'Content-Type': 'application/json',
-        },
-      },
-      (res) => {
-        uni.showToast({
-          title: '收藏成功',
-          icon: 'success',
-          duration: 2000,
-        })
-        resolve(res)
-      },
-      (err) => {
-        console.error('添加到文件夹失败:', err)
-        uni.showToast({
-          title: '收藏失败',
-          icon: 'none',
-        })
-        reject(err)
-      },
-    )
-  })
+  return withAuthRequest(
+    {
+      url,
+      method: 'POST',
+      data,
+    },
+    (res) => {
+      uni.showToast({
+        title: '收藏成功',
+        icon: 'success',
+        duration: 2000,
+      })
+      return res
+    },
+    (err) => {
+      console.error('添加到文件夹失败:', err)
+      uni.showToast({
+        title: '收藏失败',
+        icon: 'none',
+      })
+    },
+  )
 }
