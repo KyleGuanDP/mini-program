@@ -1,39 +1,38 @@
 <template>
   <view class="agree-container">
-    <!-- 协议弹窗组件（可选） -->
-    <agree v-model="isShow" class="agree" />
+    <view class="brand-logo"></view>
 
-    <!-- 协议勾选区 -->
-    <checkbox-group @change="onChange">
-      <label class="checkbox-line">
-        <checkbox value="agree" :checked="isChecked" />
-        <text class="agree-text">
-          我已阅读并同意
-          <text class="link" @click.stop="openAgreement('user')">《用户协议》</text>
-          和
-          <text class="link" @click.stop="openAgreement('privacy')">《隐私政策》</text>
-        </text>
-      </label>
-    </checkbox-group>
+    <view class="content">
+      <!-- 协议弹窗组件（可选） -->
+      <agree v-model="isShow" class="agree" />
 
-    <!-- 登录按钮 -->
-    <button
-      open-type="getPhoneNumber"
-      @getphonenumber="onGetPhoneNumber"
-      :disabled="!isChecked"
-      class="login-button"
-    >
-      一键登录 / 获取手机号
-    </button>
+      <!-- 协议勾选区 -->
+      <checkbox-group @change="onChange">
+        <label class="checkbox-line">
+          <checkbox value="agree" :checked="isChecked" />
+          <text class="agree-text">
+            我已阅读并同意
+            <text class="link" @click.stop="openAgreement('user')">《用户协议》</text>
+            和
+            <text class="link" @click.stop="openAgreement('privacy')">《隐私政策》</text>
+          </text>
+        </label>
+      </checkbox-group>
+      <view class="login-button" @click="activePop" v-if="isChecked">一键登录 / 获取手机号</view>
+      <view class="login-button-disable" v-else="!isChecked">一键登录 / 获取手机号</view>
+    </view>
   </view>
+  <phone-login-pop-up v-if="isPopShow" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import phoneLoginPopUp from './phoneLoginPopUp.vue'
 import agree from './agree.vue' // 可选，如果你有协议弹窗组件
 
 const isChecked = ref(false)
 const isShow = ref(false)
+const isPopShow = ref(false)
 
 const onChange = (e: any) => {
   isChecked.value = e.detail.value.includes('agree')
@@ -44,42 +43,32 @@ const openAgreement = (type: 'user' | 'privacy') => {
   uni.navigateTo({ url })
 }
 
-// 手机号授权登录
-const onGetPhoneNumber = async (e: any) => {
-  console.log('微信按钮返回数据:', e.detail)
-  console.log('这是手机code', e.detail.code)
-
-  if (e.detail.errMsg !== 'getPhoneNumber:ok') {
-    uni.showToast({ title: '用户拒绝授权', icon: 'none' })
-    return
-  }
-
-  const loginRes = await uni.login()
-  const code = loginRes.code
-
-  const res = await uni.request({
-    url: 'http://121.199.10.78:8001/api/v1/auth/wechat_login_bind_phone',
-    method: 'POST',
-    data: {
-      phone_code: e.detail.code,
-      code: code,
-    },
-  })
-
-  if (res.statusCode === 200) {
-    console.log('这是手机号登录返回信息', res)
-    uni.setStorageSync('status', true)
-    uni.navigateTo({ url: '/pages/login/center' })
-  }
+// active pop
+const activePop = () => {
+  isPopShow.value = true
 }
 </script>
 
-<style scoped>
+<style lang="css" scoped>
+[class] {
+  border: 1rpx solid;
+}
+
 .agree-container {
-  padding: 60rpx 40rpx;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+}
+
+.brand-logo {
+  width: 90%;
+  height: 700rpx;
+  background-color: rgb(99, 82, 82);
+  margin-top: 100rpx;
+}
+
+.content {
+  margin-top: 100rpx;
 }
 
 .checkbox-line {
@@ -101,11 +90,44 @@ const onGetPhoneNumber = async (e: any) => {
 }
 
 .login-button {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center;
+  width: 518rpx;
+  height: 80rpx;
+  background: #e65924;
+  border-radius: 16rpx 16rpx 16rpx 16rpx;
   width: 100%;
   height: 88rpx;
-  background-color: #007aff;
   color: #fff;
+  font-family: Inter, Inter;
+  font-weight: 400;
   font-size: 30rpx;
-  border-radius: 12rpx;
+  color: #ffffff;
+  line-height: 44rpx;
+  text-align: center;
+  font-style: normal;
+  text-transform: none;
+}
+
+.login-button-disable {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center;
+  width: 518rpx;
+  height: 80rpx;
+  background: #e1dddb;
+  border-radius: 16rpx 16rpx 16rpx 16rpx;
+  width: 100%;
+  height: 88rpx;
+  color: #fff;
+  font-family: Inter, Inter;
+  font-weight: 400;
+  font-size: 30rpx;
+  color: #ffffff;
+  line-height: 44rpx;
+  text-align: center;
+  font-style: normal;
+  text-transform: none;
 }
 </style>

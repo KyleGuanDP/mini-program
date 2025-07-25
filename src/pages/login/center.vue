@@ -11,33 +11,95 @@
         <view class="user-name" @click="getUserProfile">{{ userName }}</view>
         <view class="login-guide" @click="login">登录账号后即可解锁更多 ></view>
       </view>
+
+      <view class="icon">
+        <image
+          src="../../static/images/collection.png"
+          class="to-img"
+          mode="aspectFill"
+          @click="toPersonalCenter"
+        />
+      </view>
     </view>
 
     <view class="info-area">
       <view class="mine">
-        <view class="personal" @click="toPersonalCenter">个人中心</view>
+        <view class="collection" @click="toCollection">
+          <view class="toPersonal">
+            <image src="../../static/images/collection.png" mode="aspectFill" />
+          </view>
+          <view>我的收藏</view>
+        </view>
         <view class="divider"></view>
-        <view class="collection" @click="toCollection">我的收藏</view>
-        <view class="divider"></view>
-        <view class="history">我的足迹</view>
+        <view class="history">
+          <view class="icon">
+            <image
+              src="../../static/images/collection.png"
+              class="to-img"
+              mode="aspectFill"
+              @click="toPersonalCenter"
+            />
+          </view>
+          我的足迹
+        </view>
       </view>
       <view class="mine">
-        <view class="download">下载历史</view>
+        <view class="download">
+          <view class="icon">
+            <image
+              src="../../static/images/collection.png"
+              class="to-img"
+              mode="aspectFill"
+              @click="toPersonalCenter"
+            />
+          </view>
+          下载历史
+        </view>
         <view class="divider"></view>
-        <view class="feedback">问题反馈</view>
+        <view class="feedback">
+          <view class="icon">
+            <image
+              src="../../static/images/collection.png"
+              class="to-img"
+              mode="aspectFill"
+              @click="toPersonalCenter"
+            />
+          </view>
+          问题反馈
+        </view>
       </view>
       <view class="mine">
-        <view class="about">关于lumy</view>
+        <view class="about">
+          <view class="icon">
+            <image
+              src="../../static/images/collection.png"
+              class="to-img"
+              mode="aspectFill"
+              @click="toPersonalCenter"
+            />
+          </view>
+          关于lumy
+        </view>
       </view>
       <view class="mine">
-        <view class="about" @click="toPrivacy">隐私保护</view>
+        <view class="about" @click="toPrivacy">
+          <view class="icon">
+            <image
+              src="../../static/images/collection.png"
+              class="to-img"
+              mode="aspectFill"
+              @click="toPersonalCenter"
+            />
+          </view>
+          隐私保护
+        </view>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, Static } from 'vue'
 import { withAuthUpload } from '@/utils/withAuthUpload'
 import { withAuthRequest } from '@/utils/withAuthRequest'
 const status = ref(false)
@@ -84,7 +146,8 @@ const login = async () => {
   console.log('只是接口一返回', res)
   const data = res.data as any
   // 判断是否有手机号
-  if (data.detail === 'Missing phone number') {
+  // data.detail === 'Missing phone number'
+  if (true) {
     uni.navigateTo({
       url: '/pages/login/phoneLogin',
     })
@@ -203,6 +266,10 @@ onShow(async () => {
 </script>
 
 <style lang="css" scoped>
+/* [class] {
+  border: 1rpx solid;
+} */
+
 .container {
   width: 100%;
   height: 100vh;
@@ -231,6 +298,17 @@ onShow(async () => {
 .avatar {
   width: 126rpx;
   height: 126rpx;
+  background: #ffffff;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toPersonal {
+  width: 56rpx;
+  height: 56rpx;
   background: #ffffff;
   border-radius: 50%;
   overflow: hidden;
@@ -312,6 +390,11 @@ onShow(async () => {
   text-align: center;
   font-style: normal;
   text-transform: none;
+}
+
+.icon {
+  width: 56rpx;
+  height: 56rpx;
 }
 
 .divider {

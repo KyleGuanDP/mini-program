@@ -68,6 +68,7 @@ const props = defineProps<{
   type: string
   selectedCollections: any
   selectedFolders?: any
+  searchPage?: boolean
 }>()
 
 const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
@@ -143,6 +144,15 @@ const createEmit = async () => {
   const target = routes.value.at(-1).id
   await getFolder(props.type, target, false, folders, items)
   activeCreate.value = false
+}
+
+// 返回
+const goBack = () => {
+  if (routes.value.length > 1) {
+    const pop = routes.value.pop()
+    const target = routes.value[routes.value.length - 1]
+    getFolder(props.type, target.id, false, folders, items)
+  }
 }
 onMounted(() => {
   routes.value = [{ name: '根目录', id: null }]
