@@ -1,28 +1,61 @@
 <template>
   <view class="container" v-if="page === 'product'">
     <view class="category">
-      <view class="sub-category product" @tap="selectItem" data-name="product">产品</view>
-      <view class="sub-category" @tap="selectItem" data-name="technical_paper">技术文章</view>
-      <view class="sub-category" @tap="selectItem" data-name="reference_design">参考设计</view>
+      <view
+        class="sub-category product"
+        @tap="selectItem"
+        data-name="product"
+        :class="{ active: type === 'product' }"
+      >
+        产品
+      </view>
+      <view
+        class="sub-category center"
+        @tap="selectItem"
+        data-name="technical_paper"
+        :class="{ active: type === 'technical_paper' }"
+      >
+        技术文章
+      </view>
+      <view
+        class="sub-category"
+        @tap="selectItem"
+        data-name="reference_design"
+        :class="{ active: type === 'reference_design' }"
+      >
+        参考设计
+      </view>
     </view>
 
     <view class="main">
       <view class="edit">
-        <view class="add" @click="toAlbum">专辑</view>
-        <view class="order" @click="toProduct">文件夹</view>
+        <view class="page">
+          <view class="all" @click="toAlbum" :class="{ active: page === 'Album' }">全部</view>
+          <view class="album" @click="toProduct" :class="{ active: page === 'product' }">
+            收藏夹
+          </view>
+        </view>
+        <view class="order">
+          <view class="order-image">
+            <image src="../../static/images/order.png" mode="scaleToFill" />
+          </view>
+          <view class="order-text">智能排序</view>
+        </view>
       </view>
-      <view class="edit">
-        <view class="add" @click="activeCreateFolder">新建文件夹</view>
-        <view class="order">智能排序</view>
+      <view class="total">
+        共
+        <text class="highlight">{{ items.length }}</text>
+        个收藏
       </view>
       <view class="route">
         <view
           class="specific-route"
+          :class="{ active: route.id === routes.at(-1).id }"
           v-for="(route, index) in routes"
           :key="index"
           @click="goToIndex(index)"
         >
-          {{ route.name }} >
+          {{ route.name }} /
         </view>
       </view>
       <scroll-view scroll-y class="content">
@@ -63,6 +96,7 @@
       @activeMove="activeMoveFunc"
       @activeManage="activeManageFunc"
       @activeRemove="activeRemovePage"
+      @closeManage="managementCancel"
     />
     <Move
       :type="type"
@@ -75,6 +109,7 @@
 
     <manageOption
       v-if="activeManage"
+      @allSelected="allSelected"
       @deactivateManage="activeManageFunc2"
       @editEmit="processEditEmit"
       :type="type"
@@ -95,32 +130,77 @@
       @closeRemove="activeRemovePage2"
       @removeBack="processEditEmit"
     />
+
+    <movable-area class="float-area">
+      <movable-view
+        class="float-btn"
+        direction="all"
+        :x="floatX"
+        :y="floatY"
+        @change="onFloatChange"
+        @tap="activeCreateFolder"
+      >
+        <image src="../../static/images/create.png" mode="scaleToFill" />
+      </movable-view>
+    </movable-area>
   </view>
-  <view v-else>
+  <view class="container" v-else>
     <view class="category">
-      <view class="sub-category product" @tap="selectItem" data-name="product">产品</view>
-      <view class="sub-category" @tap="selectItem" data-name="technical_paper">技术文章</view>
-      <view class="sub-category" @tap="selectItem" data-name="reference_design">参考设计</view>
+      <view
+        class="sub-category product"
+        @tap="selectItem"
+        data-name="product"
+        :class="{ active: type === 'product' }"
+      >
+        产品
+      </view>
+      <view
+        class="sub-category center"
+        @tap="selectItem"
+        data-name="technical_paper"
+        :class="{ active: type === 'technical_paper' }"
+      >
+        技术文章
+      </view>
+      <view
+        class="sub-category"
+        @tap="selectItem"
+        data-name="reference_design"
+        :class="{ active: type === 'reference_design' }"
+      >
+        参考设计
+      </view>
     </view>
-    <view class="edit">
-      <view class="add" @click="toAlbum">专辑</view>
-      <view class="order" @click="toProduct">文件夹</view>
-    </view>
-    <scroll-view scroll-y class="content">
-      <view class="items">
-        <view class="folder-name" v-for="item in flatItems" :key="item.id">
-          <view class="folder-image">
-            <image src="../../static/images/chip.png" mode="scaleToFill" />
+
+    <!-- 👇 新增 main 包裹 -->
+    <view class="main">
+      <view class="edit">
+        <view class="page">
+          <view class="all" @click="toAlbum" :class="{ active: page === 'Album' }">全部</view>
+          <view class="album" @click="toProduct" :class="{ active: page === 'product' }">
+            收藏夹
           </view>
-          <view>{{ item.target_name }}</view>
-          <view
-            class="icon"
-            :class="{ active: activeIcons[item.id] }"
-            @click="toggleCollectionIcon(item.id)"
-          ></view>
         </view>
       </view>
-    </scroll-view>
+
+      <scroll-view scroll-y class="content">
+        <view class="items">
+          <view class="folder-name" v-for="item in flatItems" :key="item.id">
+            <view class="folder-image">
+              <image src="../../static/images/chip.png" mode="scaleToFill" />
+            </view>
+            <view>{{ item.target_name }}</view>
+            <view
+              class="icon"
+              :class="{ active: activeIcons[item.id] }"
+              @click="toggleCollectionIcon(item.id)"
+            ></view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    <!-- 👆 main 包裹结束 -->
+
     <ManagementAlbum
       :selectedItems="selectedCollectionStack"
       v-if="selectedCollectionStack.length"
@@ -171,7 +251,7 @@ const activeCreate = ref<boolean>(false)
 const activeRemove = ref<boolean>(false)
 
 const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
-const page = ref<string>('product')
+const page = ref<any>('product')
 const flatItems = ref<any[]>([])
 const loading = ref(false)
 
@@ -403,6 +483,22 @@ const createEmit = async () => {
   uni.hideLoading()
 }
 
+// 悬浮
+const floatX = ref(600)
+const floatY = ref(1000)
+
+const onFloatChange = (e) => {
+  floatX.value = e.detail.x
+  floatY.value = e.detail.y
+}
+
+// 管理关闭
+const managementCancel = () => {
+  activeIcons.value = {}
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+}
+
 //初始化数据
 onShow(() => {
   routes.value = [{ name: '根目录', id: null }]
@@ -421,35 +517,61 @@ onShow(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  background: #f9f9f9;
+  padding-top: 30rpx;
 }
 
 .category {
-  padding-top: 70rpx;
-  padding-left: 30rpx;
-  width: 100%;
+  width: 85%;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 }
 
 .sub-category {
-  width: 130rpx;
-  height: 46rpx;
-  font-family: Inter, Inter;
+  font-family:
+    PingFang SC,
+    PingFang SC;
   font-weight: 400;
-  font-size: 30rpx;
+  font-size: 32rpx;
+  color: #979797;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
 }
 
-.product {
-  width: 70rpx;
+.sub-category.active {
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 600;
+  font-size: 32rpx;
+  color: #181818;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+  border-bottom: 4rpx solid #e65924;
+}
+
+.sub-category.center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .main {
+  background: #ffffff;
+  border-radius: 16rpx 16rpx 16rpx 16rpx;
+  width: 95%;
   margin-top: 10rpx;
   height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 15rpx;
+  gap: 10rpx;
 }
 
 .edit {
@@ -457,22 +579,132 @@ onShow(() => {
   height: 50rpx;
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
 }
 
-.route {
+.page {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.all,
+.album {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: #979797;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+  border-radius: 4rpx 4rpx 4rpx 4rpx;
+  border: 1rpx solid #dcdcdc;
+  padding-left: 15rpx;
+  padding-right: 15rpx;
+}
+
+.all.active,
+.album.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4rpx 4rpx 4rpx 4rpx;
+  border: 1rpx solid #e65924;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: #e65924;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+  padding-left: 15rpx;
+  padding-right: 15rpx;
+}
+
+.order {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: #636572;
+  font-style: normal;
+  text-transform: none;
+  gap: 5rpx;
+}
+
+.order-image {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 25rpx;
+  height: 25rpx;
+}
+
+.order-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.total {
   width: 95%;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: #333333;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+}
+
+.total text {
+  color: #e65924;
+}
+
+.route {
+  width: 98%;
   display: flex;
   flex-direction: row;
   font-family:
     PingFang SC,
     PingFang SC;
   font-weight: 400;
-  font-size: 30rpx;
-  color: #1d8aed;
+  font-size: 22rpx;
+
   text-align: left;
   font-style: normal;
   text-transform: none;
+  color: #979797;
+  padding-left: 10rpx;
+  padding-top: 10rpx;
+}
+
+.specific-route {
+  padding-left: 10rpx;
+}
+
+.specific-route.active {
+  color: #e65924;
+  padding-left: 10rpx;
 }
 
 .folders,
@@ -487,8 +719,7 @@ onShow(() => {
   background-color: #ffffff;
   padding: 24rpx 32rpx;
   margin-bottom: 16rpx;
-  border-radius: 12rpx;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
+  border-bottom: 2rpx solid #eeeeee;
   transition: background-color 0.2s;
   width: 90%;
 }
@@ -519,5 +750,33 @@ onShow(() => {
   color: #1e80ff;
   background-color: blue;
   border: 1rpx solid;
+}
+
+/* 悬浮 */
+
+.float-area {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.float-btn {
+  width: 100rpx;
+  height: 100rpx;
+  background: #e65924;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.float-btn image {
+  width: 40%;
+  height: 40%;
 }
 </style>

@@ -18,6 +18,23 @@
         </view>
       </view>
 
+      <view class="input-row">
+        <view class="title">昵称:</view>
+        <view class="input-wrapper">
+          <view class="fake-placeholder" v-if="!isNickNameFocused" @click="focusInput('nickName')">
+            {{ nickNamePlaceholder }}
+          </view>
+          <input
+            v-else
+            ref="nickNameInputRef"
+            v-model="nickName"
+            @blur="isNickNameFocused = false"
+            :focus="isNickNameFocused"
+            @confirm="edit"
+          />
+        </view>
+      </view>
+
       <!-- 性别 -->
       <view class="picker">
         <picker :range="gender" :value="selectedGenderIndex" @change="onGenderPickerChange">
@@ -64,22 +81,6 @@
         </view>
       </view>
 
-      <!-- 职位 -->
-      <view class="picker">
-        <picker
-          mode="multiSelector"
-          :range="multiRange"
-          :value="multiIndex"
-          @change="onOccupationPickerChange"
-          @columnchange="columnChange"
-        >
-          <view class="inner-picker">
-            <view class="title">职位:</view>
-            <view class="picker-text">{{ occupationDefault }}</view>
-          </view>
-        </picker>
-      </view>
-
       <view class="input-row">
         <view class="title">地址:</view>
         <view class="input-wrapper">
@@ -95,8 +96,25 @@
           />
         </view>
       </view>
+
+      <!-- 职位 -->
+      <view class="picker">
+        <picker
+          mode="multiSelector"
+          :range="multiRange"
+          :value="multiIndex"
+          @change="onOccupationPickerChange"
+          @columnchange="columnChange"
+        >
+          <view class="inner-picker">
+            <view class="title">职位:</view>
+            <view class="picker-text">{{ occupationDefault }}</view>
+          </view>
+        </picker>
+      </view>
     </view>
-    <button class="logoutButton" @click="logout">登出</button>
+
+    <button class="logoutButton" @click="logout">退出登录</button>
   </view>
 </template>
 
@@ -109,12 +127,14 @@ const isNameFocused = ref(false)
 const isMailFocused = ref(false)
 const isCompanyFocused = ref(false)
 const isAddressFocused = ref(false)
+const isNickNameFocused = ref(false)
 
 // 输入框引用
 const nameInputRef = ref()
 const mailInputRef = ref()
 const companyInputRef = ref()
 const addressInputRef = ref()
+const nickNameInputRef = ref()
 
 // 聚焦函数
 const focusInput = (field: string) => {
@@ -130,6 +150,9 @@ const focusInput = (field: string) => {
   } else if (field === 'address') {
     isAddressFocused.value = true
     addressInputRef.value?.focus()
+  } else if (field === 'nickName') {
+    isNickNameFocused.value = true
+    nickNameInputRef.value?.focus()
   }
 }
 
@@ -138,8 +161,10 @@ const name = ref('')
 const mail = ref('')
 const company = ref('')
 const address = ref('')
+const nickName = ref('')
 
 // 占位符
+const nickNamePlaceholder = ref('请输入昵称')
 const namePlaceholder = ref('请输入姓名')
 const mailPlaceholder = ref('请输入邮箱地址')
 const companyPlaceholder = ref('请输入公司名称')
@@ -228,7 +253,7 @@ const getUserInfo = async () => {
 const edit = async () => {
   let url = `http://121.199.10.78:8001/api/v1/users/me`
   const data = {
-    nickname: 'Kyle',
+    nickname: nickName.value,
     name: name.value,
     gender: genderDefault.value,
     email: mail.value,
@@ -250,13 +275,13 @@ const edit = async () => {
         duration: 2000,
         mask: true,
       })
-      // const data = res.data as any
-      // namePlaceholder.value = data.name || '请输入姓名'
-      // companyPlaceholder.value = data.company || '请输入公司名称'
-      // mailPlaceholder.value = data.email || '请输入邮箱地址'
-      // occupationDefault.value = data.job_title || '请选择职业'
-      // genderDefault.value = data.gender || '请选择性别'
-      // addressPlaceholder.value = data.address || '请输入住址'
+      const data = res.data as any
+      namePlaceholder.value = data.name || '请输入姓名'
+      companyPlaceholder.value = data.company || '请输入公司名称'
+      mailPlaceholder.value = data.email || '请输入邮箱地址'
+      occupationDefault.value = data.job_title || '请选择职业'
+      genderDefault.value = data.gender || '请选择性别'
+      addressPlaceholder.value = data.address || '请输入住址'
     },
     (err) => {
       console.error('用户信息加载失败:', err)
@@ -291,6 +316,10 @@ onMounted(() => {
 </script>
 
 <style lang="css" scoped>
+/* [class] {
+  border: 1rpx solid;
+} */
+
 .container {
   height: 100vh;
   display: flex;
@@ -321,6 +350,7 @@ onMounted(() => {
   flex-direction: row;
   align-items: center;
   margin-bottom: 24rpx;
+  border-bottom: 4rpx solid #f5f7fa;
 }
 
 .title {

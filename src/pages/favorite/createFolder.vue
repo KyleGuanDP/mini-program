@@ -52,8 +52,8 @@ const complete = async () => {
 
 <style lang="css" scoped>
 /* [class] {
-    border: 1rpx solid;
-  } */
+  border: 1rpx solid;
+} */
 .container {
   position: fixed;
   top: 0;
@@ -89,6 +89,7 @@ const complete = async () => {
 }
 
 .head {
+  margin-top: 24rpx;
   width: 95%;
   display: flex;
   justify-content: space-between;
@@ -104,9 +105,28 @@ const complete = async () => {
 }
 
 .create {
-  color: #1a73e8;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 28rpx;
+  color: #fa541c;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
 }
 
+.cancel {
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 28rpx;
+  color: #000000;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+}
 .move {
   font-size: 32rpx;
   color: #333;
@@ -116,29 +136,43 @@ const complete = async () => {
   width: 95%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .input-area {
+  width: 90%;
   background-color: #f5f5f5;
   padding: 24rpx;
   border-radius: 16rpx;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
-.label {
-  font-size: 28rpx;
-  color: #333;
-  margin-bottom: 16rpx;
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 500;
+  font-size: 24rpx;
+  color: #000000;
+  font-style: normal;
+  text-transform: none;
 }
 
-.input {
-  background-color: #fff;
-  border-radius: 12rpx;
-  padding: 24rpx;
-  font-size: 30rpx;
-  border: 1rpx solid #ddd;
-  color: #000;
+.title-input {
+  flex: 1;
+  margin-left: 40rpx;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: black;
+  font-style: normal;
+  text-transform: none;
 }
 
 .input-placeholder {

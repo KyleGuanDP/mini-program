@@ -25,23 +25,20 @@
 
 <script setup lang="ts">
 import { editFolderName } from '@/utils/editFolderName'
-// receive params
+
 const props = defineProps<{
   type: any
   selectedFolders: any[]
 }>()
 
-// emit
 const emit = defineEmits(['closeEdit', 'editEmit'])
-// 初始化数据
+
 const inputValue = ref('')
 
-// close edit
 const deActivate = () => {
   emit('closeEdit')
 }
 
-// handle complete
 const complete = async () => {
   console.log('new name', inputValue.value)
   uni.showLoading({
@@ -57,27 +54,14 @@ const complete = async () => {
   } else {
     uni.showToast({ title: '编辑失败', icon: 'error' })
   }
+
   setTimeout(() => {
     emit('editEmit')
   }, 1000)
-  // if (res.statusCode === 200) {
-  //   uni.showModal({
-  //     title: '修改成功',
-  //     showCancel: false,
-  //   })
-  // } else {
-  //   uni.showModal({
-  //     title: '修改失败',
-  //     showCancel: false,
-  //   })
-  // }
-  // emit('editEmit')
 }
 </script>
+
 <style lang="css" scoped>
-/* [class] {
-  border: 1rpx solid;
-} */
 .container {
   position: fixed;
   top: 0;
@@ -113,6 +97,7 @@ const complete = async () => {
 }
 
 .head {
+  padding-top: 15rpx;
   width: 95%;
   display: flex;
   justify-content: space-between;
@@ -124,45 +109,66 @@ const complete = async () => {
 
 .cancel,
 .create {
-  color: #999;
+  color: #000000;
 }
 
 .create {
-  color: #1a73e8;
+  color: #fa541c;
 }
 
 .move {
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 500;
   font-size: 32rpx;
-  color: #333;
+  color: #000000;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
 }
 
 .content {
   width: 95%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .input-area {
+  width: 90%;
   background-color: #f5f5f5;
   padding: 24rpx;
   border-radius: 16rpx;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
-.label {
-  font-size: 28rpx;
-  color: #333;
-  margin-bottom: 16rpx;
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 500;
+  font-size: 24rpx;
+  color: #000000;
+  font-style: normal;
+  text-transform: none;
 }
 
-.input {
-  background-color: #fff;
-  border-radius: 12rpx;
-  padding: 24rpx;
-  font-size: 30rpx;
-  border: 1rpx solid #ddd;
-  color: #000;
+.title-input {
+  flex: 1;
+  margin-left: 40rpx;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: black;
+  font-style: normal;
+  text-transform: none;
 }
 
 .input-placeholder {

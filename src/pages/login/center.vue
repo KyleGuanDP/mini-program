@@ -14,7 +14,7 @@
 
       <view class="icon">
         <image
-          src="../../static/images/collection.png"
+          src="../../static/images/center/back.png"
           class="to-img"
           mode="aspectFill"
           @click="toPersonalCenter"
@@ -25,8 +25,8 @@
     <view class="info-area">
       <view class="mine">
         <view class="collection" @click="toCollection">
-          <view class="toPersonal">
-            <image src="../../static/images/collection.png" mode="aspectFill" />
+          <view class="icon">
+            <image src="../../static/images/center/collect.png" mode="aspectFill" />
           </view>
           <view>我的收藏</view>
         </view>
@@ -34,7 +34,7 @@
         <view class="history">
           <view class="icon">
             <image
-              src="../../static/images/collection.png"
+              src="../../static/images/center/trace.png"
               class="to-img"
               mode="aspectFill"
               @click="toPersonalCenter"
@@ -47,7 +47,7 @@
         <view class="download">
           <view class="icon">
             <image
-              src="../../static/images/collection.png"
+              src="../../static/images/center/history.png"
               class="to-img"
               mode="aspectFill"
               @click="toPersonalCenter"
@@ -59,7 +59,7 @@
         <view class="feedback">
           <view class="icon">
             <image
-              src="../../static/images/collection.png"
+              src="../../static/images/center//feedback.png"
               class="to-img"
               mode="aspectFill"
               @click="toPersonalCenter"
@@ -72,7 +72,7 @@
         <view class="about">
           <view class="icon">
             <image
-              src="../../static/images/collection.png"
+              src="../../static/images/center/about.png"
               class="to-img"
               mode="aspectFill"
               @click="toPersonalCenter"
@@ -81,7 +81,7 @@
           关于lumy
         </view>
       </view>
-      <view class="mine">
+      <!-- <view class="mine">
         <view class="about" @click="toPrivacy">
           <view class="icon">
             <image
@@ -93,7 +93,7 @@
           </view>
           隐私保护
         </view>
-      </view>
+      </view> -->
     </view>
   </view>
 </template>
@@ -147,7 +147,7 @@ const login = async () => {
   const data = res.data as any
   // 判断是否有手机号
   // data.detail === 'Missing phone number'
-  if (true) {
+  if (data.detail === 'Missing phone number') {
     uni.navigateTo({
       url: '/pages/login/phoneLogin',
     })
@@ -157,6 +157,7 @@ const login = async () => {
 
     uni.setStorageSync('status', true)
     await getPersonalInfo('http://121.199.10.78:8001/')
+    console.log('这是头像地址2', avatarUrl.value)
     uni.showToast({ title: '登录成功' })
   }
 }
@@ -235,7 +236,7 @@ const download = async (url: string) => {
 const getPersonalInfo = async (head: string) => {
   const url = head + 'api/v1/users/me'
 
-  await withAuthRequest(
+  return await withAuthRequest(
     {
       url: url,
       method: 'GET',
@@ -244,7 +245,9 @@ const getPersonalInfo = async (head: string) => {
       console.log('this is res of getPersonal Info', res)
       const data = res.data as any
       avatarUrl.value = head + 'api/v1/files/download?path=' + data.avatar_url
-      userName.value = data.name
+      console.log('这是头像地址', avatarUrl.value)
+      userName.value = data.nickname
+      return res
     },
     (err) => {
       console.log('出发了获取信息报错流程')
@@ -260,8 +263,10 @@ const getPersonalInfo = async (head: string) => {
 // }
 
 onShow(async () => {
-  await getPersonalInfo('http://121.199.10.78:8001/')
-  console.log('主页面加载')
+  userName.value = '游客'
+  avatarUrl.value = ''
+  const res = await getPersonalInfo('http://121.199.10.78:8001/')
+  console.log(res.data)
 })
 </script>
 
@@ -273,7 +278,7 @@ onShow(async () => {
 .container {
   width: 100%;
   height: 100vh;
-  background: #f5f7fa;
+  background: #f5f5f5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -390,11 +395,12 @@ onShow(async () => {
   text-align: center;
   font-style: normal;
   text-transform: none;
+  gap: 10rpx;
 }
 
 .icon {
-  width: 56rpx;
-  height: 56rpx;
+  width: 46rpx;
+  height: 46rpx;
 }
 
 .divider {

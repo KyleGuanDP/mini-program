@@ -1,11 +1,15 @@
 <template>
   <view class="agree-container">
-    <view class="brand-logo"></view>
+    <view class="brand-logo">
+      <image src="../../static/images/center/logo.png" class="to-img" mode="aspectFill" />
+    </view>
 
     <view class="content">
       <!-- 协议弹窗组件（可选） -->
       <agree v-model="isShow" class="agree" />
 
+      <view class="login-button" @click="activePop" v-if="isChecked">一键登录 / 获取手机号</view>
+      <view class="login-button-disable" v-else="!isChecked">一键登录 / 获取手机号</view>
       <!-- 协议勾选区 -->
       <checkbox-group @change="onChange">
         <label class="checkbox-line">
@@ -18,11 +22,9 @@
           </text>
         </label>
       </checkbox-group>
-      <view class="login-button" @click="activePop" v-if="isChecked">一键登录 / 获取手机号</view>
-      <view class="login-button-disable" v-else="!isChecked">一键登录 / 获取手机号</view>
     </view>
   </view>
-  <phone-login-pop-up v-if="isPopShow" />
+  <phone-login-pop-up v-if="isPopShow" @close="closePop" />
 </template>
 
 <script setup lang="ts">
@@ -39,7 +41,7 @@ const onChange = (e: any) => {
 }
 
 const openAgreement = (type: 'user' | 'privacy') => {
-  const url = type === 'user' ? '/pages/agreement/user' : '/pages/agreement/privacy'
+  const url = type === 'user' ? '/pages/privacy/registration' : '/pages/privacy/privacy'
   uni.navigateTo({ url })
 }
 
@@ -47,12 +49,17 @@ const openAgreement = (type: 'user' | 'privacy') => {
 const activePop = () => {
   isPopShow.value = true
 }
+
+// close pop
+const closePop = () => {
+  isPopShow.value = false
+}
 </script>
 
 <style lang="css" scoped>
-[class] {
+/* [class] {
   border: 1rpx solid;
-}
+} */
 
 .agree-container {
   display: flex;
@@ -61,18 +68,20 @@ const activePop = () => {
 }
 
 .brand-logo {
-  width: 90%;
-  height: 700rpx;
-  background-color: rgb(99, 82, 82);
-  margin-top: 100rpx;
+  width: 372rpx;
+  height: 300rpx;
+  margin-top: 200rpx;
 }
 
 .content {
-  margin-top: 100rpx;
+  margin-top: 150rpx;
 }
 
 .checkbox-line {
+  margin-top: 50rpx;
   display: flex;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
   margin-bottom: 40rpx;
 }

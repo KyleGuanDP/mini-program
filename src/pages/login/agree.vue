@@ -2,7 +2,7 @@
   <view class="page">
     <view v-if="modelValue" class="popup-mask">
       <view class="popup-content">
-        <view class="popup-title">温馨提示</view>
+        <view class="popup-title">用户隐私保护</view>
         <view class="popup-text">
           阅读并同意
           <text class="link" @click="openAgreement('user')">《用户协议》</text>
