@@ -777,8 +777,8 @@ onShow(async () => {
 
 .icon {
   margin-left: auto;
-  height: 20rpx;
-  width: 20rpx;
+  height: 30rpx;
+  width: 30rpx;
   border-radius: 50%;
   border: 1rpx solid;
 }
