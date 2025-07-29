@@ -4,7 +4,7 @@
       <view class="title">用户隐私保护提示</view>
       <view class="notice">
         感谢您使用本小程序，在使用前您应当 阅读井同意
-        <text class="link">《用户隐私保护指引》</text>
+        <text class="link" @click="toGuide">《用户隐私保护指引》</text>
         ，当 点击同意并继续时，即表示您已理解并 同意该条款内容，该条款将对您产生法
         律约束力；如您不同意，将无法继续使 用小程序相关功能。
       </view>
@@ -53,13 +53,22 @@ const onGetPhoneNumber = async (e: any) => {
     // await getPersonalInfo('http://121.199.10.78:8001/')
     // console.log("这是头像地址2", avatarUrl.value)
     uni.showToast({ title: '登录成功' })
-    uni.switchTab({ url: '/pages/login/center' })
+    setTimeout(() => {
+      uni.switchTab({ url: '/pages/login/center' })
+    }, 1000)
   }
 }
 
 // close
 const close = () => {
   emit('close')
+}
+
+// toGuide
+const toGuide = () => {
+  uni.navigateTo({
+    url: '/pages/privacy/guide',
+  })
 }
 </script>
 

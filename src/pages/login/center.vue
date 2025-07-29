@@ -150,7 +150,7 @@ const login = async () => {
   const data = res.data as any
   // 判断是否有手机号
   // data.detail === 'Missing phone number'
-  if (data.detail === 'Missing phone number') {
+  if (true) {
     uni.navigateTo({
       url: '/pages/login/phoneLogin',
     })
