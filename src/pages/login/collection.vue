@@ -62,7 +62,7 @@
         <view class="folders">
           <view class="folder-name" v-for="folder in folders" :key="folder.id">
             <view class="folder-image" @click="clickFolderAndImage(folder.id, folder.name)">
-              <image src="../../static/images/folder.png" mode="scaleToFill" />
+              <image src="../../static/images/center/folder.png" mode="scaleToFill" />
             </view>
             <view @click="clickFolderAndImage(folder.id, folder.name)">{{ folder.name }}</view>
             <view
@@ -76,7 +76,7 @@
         <view class="items">
           <view class="folder-name" v-for="item in items" :key="item.id">
             <view class="folder-image" @click="clickItem(item)">
-              <image src="../../static/images/chip.png" mode="scaleToFill" />
+              <image src="../../static/images/center/chip.png" mode="scaleToFill" />
             </view>
             <view class="item-name" @click="clickItem(item)">
               {{ item.target_name }}
@@ -189,7 +189,7 @@
         <view class="items">
           <view class="folder-name" v-for="item in flatItems" :key="item.id">
             <view class="folder-image" @click="clickItem(item)">
-              <image src="../../static/images/chip.png" mode="scaleToFill" />
+              <image src="../../static/images/center/chip.png" mode="scaleToFill" />
             </view>
             <view class="item-name" @click="clickItem(item)">
               {{ item.target_name }}
@@ -754,6 +754,7 @@ onShow(async () => {
   border-bottom: 2rpx solid #eeeeee;
   transition: background-color 0.2s;
   width: 90%;
+  gap: 10rpx;
 }
 
 .folder-image {
