@@ -3,95 +3,109 @@
     <view class="select">
       <view class="text">全选</view>
       <view class="icon" :class="{ active: allSelected }" @click="toggleAllSelected"></view>
-      <view class="selected-number">已选择个{{ selectNumbers }}文件</view>
+      <view class="total">
+        共
+        <text class="highlight">{{ selectNumbers }}</text>
+        个文件
+      </view>
+      <view class="cancel" @click="close">
+        <image src="../../static/images/product/cancle.png" mode="scaleToFill" />
+      </view>
     </view>
+
     <view class="button-group">
-      <button class="button move" :disabled="moveDisable" @click="onActiveMove">移动到</button>
-      <button class="button cancelCollection" @click="onActiveRemove">移除</button>
+      <view class="button-container">
+        <view class="button-icon">
+          <image src="../../static/images/center/move.png" mode="scaleToFill" />
+        </view>
+        <button class="button move" :disabled="moveDisable" @click="onActiveMove">移动到</button>
+      </view>
+
+      <view class="button-container">
+        <view class="button-icon">
+          <image src="../../static/images/center/move.png" mode="scaleToFill" />
+        </view>
+        <button class="button cancelCollection" @click="onActiveRemove">移除</button>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-// emit all select
-const emit = defineEmits(['allSelected', 'activeMove', 'activeRemove'])
+const emit = defineEmits(['allSelected', 'activeMove', 'activeRemove', 'closeManage'])
 
-// 接受传入值
 const props = defineProps<{
   selectedItems: any[]
 }>()
 
-// computed
-const selectNumbers = computed(() => {
-  return props.selectedItems.length
-})
+const selectNumbers = computed(() => props.selectedItems.length)
 
-const moveDisable = computed(() => {
-  if (props.selectedItems.length) {
-    return false
-  } else {
-    return true
-  }
-})
+const moveDisable = computed(() => props.selectedItems.length === 0)
 
-const manageDisable = computed(() => {
-  if (props.selectedItems.length) {
-    return true
-  } else {
-    return false
-  }
-})
+const manageDisable = computed(() => props.selectedItems.length > 0)
 
-// 状态
 const allSelected = ref(false)
 
-// 全选切换
 const toggleAllSelected = () => {
   allSelected.value = !allSelected.value
   emit('allSelected', allSelected.value)
 }
 
-// active move
 const onActiveMove = () => {
   emit('activeMove')
 }
 
-// activeRemove
+const close = () => {
+  emit('closeManage')
+}
+
 const onActiveRemove = () => {
   emit('activeRemove')
 }
 </script>
-<style lang="css" scoped>
-/* [class] {
-    border: 1rpx solid;
-  } */
 
+<style lang="css" scoped>
 .container {
   bottom: 0;
   left: 0;
   position: fixed;
   width: 100%;
-  height: 10vh;
+  height: 20vh;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   z-index: 999;
-  background-color: grey;
+  background: #f9f9f9;
 }
 
 .select {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 90%;
-  width: 300rpx;
+  width: 95%;
+  gap: 10rpx;
+  padding-top: 20rpx;
 }
 
 .text,
-.selected-number {
+.total {
   font-size: 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.total {
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: #333333;
+}
+
+.total text {
+  color: #e65924;
 }
 
 .icon {
@@ -109,27 +123,56 @@ const onActiveRemove = () => {
 
 /* button */
 .button-group {
-  flex: 1;
-  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 95%;
+  gap: 120rpx;
+  margin-top: 40rpx;
+}
+
+.button-container {
+  padding-top: 10rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 180rpx;
+  height: 120rpx;
+  border-radius: 16rpx;
+  background-color: #ffffff;
+}
+
+.button-icon {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 20rpx;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 button.button {
-  height: 60rpx;
-  font-size: 22rpx;
+  background-color: #ffffff;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
   border: none;
   border-radius: 12rpx;
-  color: #fff;
-  background-color: #1e80ff;
+  color: black;
   transition: all 0.2s ease;
 }
 
 button.button[disabled] {
-  background-color: #c0c0c0 !important;
-  color: #f9f9f9 !important;
+  color: #bcbcbc !important;
   opacity: 0.5;
+}
+.cancel {
+  height: 32rpx;
+  width: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
 }
 </style>

@@ -2,10 +2,21 @@
   <view class="container">
     <view class="info-1">
       <view class="input-row">
+        <view class="title">头像:</view>
+        <view class="input-wrapper">
+          <button class="avatar-button" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
+            <view class="avatar">
+              <image :src="avatarUrl" class="avatar-img" mode="aspectFill" />
+            </view>
+          </button>
+        </view>
+      </view>
+
+      <view class="input-row">
         <view class="title">姓名:</view>
         <view class="input-wrapper">
           <view class="fake-placeholder" v-if="!isNameFocused" @click="focusInput('name')">
-            {{ namePlaceholder }}
+            {{ namePlaceholder }} >
           </view>
           <input
             v-else
@@ -22,7 +33,7 @@
         <view class="title">昵称:</view>
         <view class="input-wrapper">
           <view class="fake-placeholder" v-if="!isNickNameFocused" @click="focusInput('nickName')">
-            {{ nickNamePlaceholder }}
+            {{ nickNamePlaceholder }} >
           </view>
           <input
             v-else
@@ -40,7 +51,7 @@
         <picker :range="gender" :value="selectedGenderIndex" @change="onGenderPickerChange">
           <view class="inner-picker">
             <view class="title">性别:</view>
-            <view class="picker-text">{{ genderDefault }}</view>
+            <view class="picker-text">{{ genderDefault }} ></view>
           </view>
         </picker>
       </view>
@@ -51,7 +62,7 @@
         <view class="title">邮箱:</view>
         <view class="input-wrapper">
           <view class="fake-placeholder" v-if="!isMailFocused" @click="focusInput('mail')">
-            {{ mailPlaceholder }}
+            {{ mailPlaceholder }} >
           </view>
           <input
             v-else
@@ -68,7 +79,7 @@
         <view class="title">公司:</view>
         <view class="input-wrapper">
           <view class="fake-placeholder" v-if="!isCompanyFocused" @click="focusInput('company')">
-            {{ companyPlaceholder }}
+            {{ companyPlaceholder }} >
           </view>
           <input
             v-else
@@ -77,22 +88,6 @@
             @blur="isCompanyFocused = false"
             :focus="isCompanyFocused"
             @confirm="edit"
-          />
-        </view>
-      </view>
-
-      <view class="input-row">
-        <view class="title">地址:</view>
-        <view class="input-wrapper">
-          <view class="fake-placeholder" v-if="!isAddressFocused" @click="focusInput('address')">
-            {{ addressPlaceholder }}
-          </view>
-          <input
-            v-else
-            ref="addressInputRef"
-            v-model="address"
-            @blur="isAddressFocused = false"
-            :focus="isAddressFocused"
           />
         </view>
       </view>
@@ -108,12 +103,49 @@
         >
           <view class="inner-picker">
             <view class="title">职位:</view>
-            <view class="picker-text">{{ occupationDefault }}</view>
+            <view class="picker-text">{{ occupationDefault }} ></view>
           </view>
         </picker>
       </view>
     </view>
 
+    <view class="info-3">
+      <!-- 所属行业 -->
+      <view class="picker job">
+        <picker :range="occupation" :value="selectedJob" @change="onJobPickerChange">
+          <view class="inner-picker">
+            <view class="title">所属行业:</view>
+            <view class="picker-text">{{ jobDefault }} ></view>
+          </view>
+        </picker>
+      </view>
+
+      <view class="input-row">
+        <view class="title">联系电话:</view>
+        <view class="input-wrapper">
+          <view class="fake-placeholder">
+            {{ phone }}
+          </view>
+        </view>
+      </view>
+
+      <view class="input-row address">
+        <view class="title">地址:</view>
+        <view class="input-wrapper">
+          <view class="fake-placeholder" v-if="!isAddressFocused" @click="focusInput('address')">
+            {{ addressPlaceholder }} >
+          </view>
+          <input
+            v-else
+            ref="addressInputRef"
+            v-model="address"
+            @blur="isAddressFocused = false"
+            :focus="isAddressFocused"
+            @confirm="edit"
+          />
+        </view>
+      </view>
+    </view>
     <button class="logoutButton" @click="logout">退出登录</button>
   </view>
 </template>
@@ -121,6 +153,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { withAuthRequest } from '@/utils/withAuthRequest'
+import { withAuthUpload } from '@/utils/withAuthUpload'
 
 // 输入框 focus 状态
 const isNameFocused = ref(false)
@@ -155,6 +188,58 @@ const focusInput = (field: string) => {
     nickNameInputRef.value?.focus()
   }
 }
+// avatar
+const avatarUrl = ref('')
+
+// phone
+const phone = ref('')
+
+// 点击头像选择
+const onChooseAvatar = (e: any) => {
+  avatarUrl.value = e.detail.avatarUrl
+  uni.setStorageSync('avatar', avatarUrl.value)
+  download(avatarUrl.value)
+}
+
+// download avatar
+const download = async (url: string) => {
+  if (!url) {
+    uni.showToast({ title: '头像地址无效', icon: 'none' })
+    return
+  }
+
+  uni.downloadFile({
+    url,
+    success: (res) => {
+      if (res.statusCode === 200) {
+        withAuthUpload(
+          {
+            url: 'http://121.199.10.78:8001/api/v1/users/me/avatar',
+            uploadMode: true,
+            filePath: res.tempFilePath,
+            method: 'PUT',
+            data: {},
+          },
+          (uploadRes) => {
+            console.log('上传成功', uploadRes)
+            uni.showToast({ title: '上传成功', icon: 'success' })
+          },
+          (err) => {
+            console.error('上传失败', err)
+            uni.showToast({ title: '上传失败', icon: 'none' })
+          },
+        )
+      } else {
+        console.warn('下载失败 statusCode:', res.statusCode)
+        uni.showToast({ title: '头像下载失败', icon: 'none' })
+      }
+    },
+    fail: (err) => {
+      console.error('下载请求失败', err)
+      uni.showToast({ title: '网络错误，下载失败', icon: 'none' })
+    },
+  })
+}
 
 // 表单数据
 const name = ref('')
@@ -173,7 +258,9 @@ const addressPlaceholder = ref('请输入住址')
 // 性别与职位
 const gender = ['男', '女']
 const selectedGenderIndex = ref(0)
+const selectedJob = ref(0)
 const genderDefault = ref('请选择性别')
+const jobDefault = ref('请选择所属行业')
 
 const occupation = ['汽车', '计算机', '通信', '工业', '个人消费']
 const occupationMap: any = {
@@ -204,6 +291,12 @@ const onGenderPickerChange = (e: any) => {
   edit()
 }
 
+const onJobPickerChange = (e: any) => {
+  selectedJob.value = Number(e.detail.value)
+  jobDefault.value = occupation[selectedJob.value]
+  edit()
+}
+
 const onOccupationPickerChange = (e: any) => {
   multiIndex.value = e.detail.value
   const [i, j] = multiIndex.value
@@ -221,8 +314,8 @@ const columnChange = (e: any) => {
   }
 }
 
-const getUserInfo = async () => {
-  let url = `http://121.199.10.78:8001/api/v1/users/me`
+const getUserInfo = async (head: string) => {
+  const url = head + 'api/v1/users/me'
 
   await withAuthRequest(
     { url, method: 'GET' },
@@ -230,6 +323,9 @@ const getUserInfo = async () => {
       const data = res.data as any
       name.value = data.name || ''
       namePlaceholder.value = data.name || '请输入姓名'
+
+      nickNamePlaceholder.value = data.nickname || '请输入昵称'
+      nickName.value = data.nickName
 
       mail.value = data.email || ''
       mailPlaceholder.value = data.email || '请输入邮箱地址'
@@ -242,6 +338,11 @@ const getUserInfo = async () => {
 
       occupationDefault.value = data.job_title || '请选择职业'
       genderDefault.value = data.gender || '请选择性别'
+      jobDefault.value = data.industry || '请选择所属行业'
+
+      phone.value = data.phone_number
+
+      avatarUrl.value = head + 'api/v1/files/download?path=' + data.avatar_url
     },
     (err) => {
       console.error('用户信息加载失败:', err)
@@ -254,7 +355,7 @@ const edit = async () => {
   let url = `http://121.199.10.78:8001/api/v1/users/me`
   const data = {
     nickname: nickName.value,
-    name: name.value,
+    // name: name.value,
     gender: genderDefault.value,
     email: mail.value,
     company: company.value,
@@ -263,12 +364,13 @@ const edit = async () => {
     city: 'hangzhou',
     district: 'binjiang',
     address: address.value,
+    industry: jobDefault.value,
   }
   await withAuthRequest(
     { url, method: 'PUT', data },
     (res) => {
       console.log(res)
-      getUserInfo()
+      getUserInfo('http://121.199.10.78:8001/')
       uni.showToast({
         title: '修改成功',
         icon: 'success',
@@ -282,9 +384,18 @@ const edit = async () => {
       occupationDefault.value = data.job_title || '请选择职业'
       genderDefault.value = data.gender || '请选择性别'
       addressPlaceholder.value = data.address || '请输入住址'
+      nickNamePlaceholder.value = data.nickname || '请输入昵称'
+      jobDefault.value = data.industry || '请输入所属行业'
     },
     (err) => {
-      console.error('用户信息加载失败:', err)
+      if (err.statusCode === 422) {
+        uni.showToast({
+          title: '请补全信息',
+          icon: 'error',
+          duration: 2000,
+          mask: true,
+        })
+      }
     },
   )
 }
@@ -311,7 +422,7 @@ const logout = async () => {
   )
 }
 onMounted(() => {
-  getUserInfo()
+  getUserInfo('http://121.199.10.78:8001/')
 })
 </script>
 
@@ -330,7 +441,8 @@ onMounted(() => {
 }
 
 .info-1,
-.info-2 {
+.info-2,
+.info-3 {
   width: 666rpx;
   background: #ffffff;
   border-radius: 46rpx;
@@ -339,34 +451,62 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
-.info-2 {
+.info-2,
+.info-3 {
   margin-top: 27rpx;
 }
 
 .input-row {
   width: 100%;
-  height: 100rpx;
+  height: 80rpx;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 24rpx;
+  margin-bottom: 15rpx;
   border-bottom: 4rpx solid #f5f7fa;
 }
 
+.input-row.address {
+  border: 0;
+}
+
 .title {
-  width: 120rpx;
+  width: 200rpx;
   height: 46rpx;
   font-family: Inter, Inter;
   font-size: 32rpx;
 }
 
 .input-wrapper {
+  justify-content: flex-end;
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 20rpx 0;
   font-size: 30rpx;
   flex: 1;
+}
+
+.avatar-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  gap: 20rpx;
+}
+
+.avatar {
+  width: 60rpx;
+  height: 60rpx;
+  background: #ffffff;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 input {
@@ -392,6 +532,11 @@ input {
   font-size: 30rpx;
 }
 
+.picker.job {
+  border-bottom: 4rpx solid #f5f7fa;
+  margin-bottom: 15rpx;
+}
+
 .picker picker {
   display: block;
   width: 100%;
@@ -415,7 +560,7 @@ input {
   justify-content: center;
   align-items: center;
   margin-top: 60rpx;
-  width: 494rpx;
+  width: 594rpx;
   height: 76rpx;
   background: #ff6a00;
   box-shadow: 0rpx 8rpx 8rpx -6rpx rgba(0, 0, 0, 0.25);

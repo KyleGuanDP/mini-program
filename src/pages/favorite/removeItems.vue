@@ -2,12 +2,10 @@
   <view class="container">
     <view class="mask"></view>
     <view class="modal">
-      <view class="head">
-        <view class="cancel" @click="close">取消</view>
-      </view>
       <view class="options">
-        <button class="delete" @click="removeFromFolder">仅从文件夹中删除</button>
-        <button class="edit" @click="activePromptFunc">取消收藏</button>
+        <button class="delete row-1" @click="removeFromFolder">仅从文件夹中删除</button>
+        <button class="edit row-1" @click="activePromptFunc">取消收藏</button>
+        <button class="edit" @click="close">取消</button>
       </view>
     </view>
   </view>
@@ -80,9 +78,9 @@ const closePromptFunc = () => {
 </script>
 
 <style lang="css" scoped>
-[class] {
+/* [class] {
   border: 1rpx solid;
-}
+} */
 
 .container {
   position: fixed;
@@ -126,9 +124,11 @@ const closePromptFunc = () => {
 }
 
 .options {
+  background: #f9f9f9;
   width: 100%;
   display: flex;
   flex-direction: column;
+  font-weight: bold;
 }
 
 .delete,
@@ -146,5 +146,9 @@ button[disabled] {
   background-color: #c0c0c0 !important;
   color: #f9f9f9 !important;
   opacity: 0.5;
+}
+
+.row-1 {
+  border-bottom: 4rpx solid #eeeeee;
 }
 </style>

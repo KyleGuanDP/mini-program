@@ -75,10 +75,12 @@
 
         <view class="items">
           <view class="folder-name" v-for="item in items" :key="item.id">
-            <view class="folder-image">
+            <view class="folder-image" @click="clickItem(item)">
               <image src="../../static/images/chip.png" mode="scaleToFill" />
             </view>
-            <view>{{ item.target_name }}</view>
+            <view class="item-name" @click="clickItem(item)">
+              {{ item.target_name }}
+            </view>
             <view
               class="icon"
               :class="{ active: activeIcons[item.id] }"
@@ -186,10 +188,12 @@
       <scroll-view scroll-y class="content">
         <view class="items">
           <view class="folder-name" v-for="item in flatItems" :key="item.id">
-            <view class="folder-image">
+            <view class="folder-image" @click="clickItem(item)">
               <image src="../../static/images/chip.png" mode="scaleToFill" />
             </view>
-            <view>{{ item.target_name }}</view>
+            <view class="item-name" @click="clickItem(item)">
+              {{ item.target_name }}
+            </view>
             <view
               class="icon"
               :class="{ active: activeIcons[item.id] }"
@@ -207,6 +211,7 @@
       @allSelected="allSelectedFlat"
       @activeMove="activeMoveFunc"
       @activeRemove="activeRemovePage"
+      @closeManage="managementCancel"
     />
     <moveAlbum
       :type="type"
@@ -229,6 +234,7 @@
 import { getFolder } from '@/utils/getFolders'
 import { getAlbum } from '@/utils/getAlbum'
 import { ref } from 'vue'
+import { downloadFile } from '@/utils/download'
 import removeItems from '../favorite/removeItems.vue'
 import management from '../favorite/management.vue'
 import Move from '../favorite/move.vue'
@@ -369,6 +375,8 @@ async function goToIndex(index: number) {
 const allSelected = (value: boolean) => {
   if (value) {
     activeIcons.value = {}
+    selectedFolderStack.value = []
+    selectedCollectionStack.value = []
     for (const folder of folders.value) {
       activeIcons.value[folder.id] = true
       selectedFolderStack.value.push(folder.id)
@@ -389,7 +397,8 @@ const allSelected = (value: boolean) => {
 const allSelectedFlat = (value: boolean) => {
   if (value) {
     activeIcons.value = {}
-
+    selectedFolderStack.value = []
+    selectedCollectionStack.value = []
     for (const item of flatItems.value) {
       activeIcons.value[item.id] = true
       selectedCollectionStack.value.push(item.id)
@@ -499,12 +508,35 @@ const managementCancel = () => {
   selectedCollectionStack.value = []
 }
 
+// 跳转到芯片详情页
+const toDetailPage = (pid: any) => {
+  console.log('跳转的pid是', pid)
+  uni.navigateTo({ url: '/pages/chip-detail/index?id=' + pid })
+}
+
+// 打开pdf
+const openFileByUrl = (item: any) => {
+  console.log('打开的URL', item)
+  downloadFile(item?.target_path, item?.target_name)
+}
+
+const clickItem = (parameters: any) => {
+  if (type.value === 'product') {
+    console.log('跳转的pid是', parameters)
+    toDetailPage(parameters.target_id)
+  } else {
+    console.log('打开的filepath是', parameters)
+    openFileByUrl(parameters)
+  }
+}
+
 //初始化数据
-onShow(() => {
+onShow(async () => {
   routes.value = [{ name: '根目录', id: null }]
-  type.value = 'product'
-  page.value = 'product'
-  loadFolder(null)
+  activeIcons.value = {}
+  selectedFolderStack.value = []
+  selectedCollectionStack.value = []
+  await loadFolder(null)
 })
 </script>
 <style lang="css" scoped>
@@ -736,6 +768,10 @@ onShow(() => {
 .folder-image image {
   width: 100%;
   height: 100%;
+}
+
+.item-name {
+  width: 500rpx;
 }
 
 .icon {

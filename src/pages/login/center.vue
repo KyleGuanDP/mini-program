@@ -9,7 +9,8 @@
 
       <view class="text-area">
         <view class="user-name" @click="getUserProfile">{{ userName }}</view>
-        <view class="login-guide" @click="login">登录账号后即可解锁更多 ></view>
+        <view class="login-guide" @click="login" v-if="!logged()">登录账号后即可解锁更多 ></view>
+        <view class="login-guide" @click="login" v-else>{{ title }}</view>
       </view>
 
       <view class="icon">
@@ -69,7 +70,7 @@
         </view>
       </view>
       <view class="mine">
-        <view class="about">
+        <view class="about" @click="toAbout">
           <view class="icon">
             <image
               src="../../static/images/center/about.png"
@@ -102,6 +103,8 @@
 import { ref, Static } from 'vue'
 import { withAuthUpload } from '@/utils/withAuthUpload'
 import { withAuthRequest } from '@/utils/withAuthRequest'
+
+const title = ref('')
 const status = ref(false)
 const userName = ref('游客')
 const avatarUrl = ref('../../static/images/cxtd.png')
@@ -162,6 +165,15 @@ const login = async () => {
   }
 }
 
+// if logged in
+const logged = () => {
+  if (uni.getStorageSync('status')) {
+    return true
+  } else {
+    return false
+  }
+}
+
 // 去个人中心
 const toPersonalCenter = () => {
   status.value = uni.getStorageSync('status') || false
@@ -191,6 +203,13 @@ const toCollection = () => {
       mask: true,
     })
   }
+}
+
+// to about
+const toAbout = () => {
+  uni.navigateTo({
+    url: '/pages/about/about',
+  })
 }
 // download avatar
 const download = async (url: string) => {
@@ -247,6 +266,7 @@ const getPersonalInfo = async (head: string) => {
       avatarUrl.value = head + 'api/v1/files/download?path=' + data.avatar_url
       console.log('这是头像地址', avatarUrl.value)
       userName.value = data.nickname
+      title.value = data.job_title || '暂未填写职位'
       return res
     },
     (err) => {

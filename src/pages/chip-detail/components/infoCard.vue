@@ -129,6 +129,7 @@ const showPopup = async () => {
     detail.value.datasheet_file,
   )
 
+  console.log('这是芯片详情收藏成功返回', res.data)
   item_id.value.push(res.data.id)
   // console.log('这是收藏之后的id', res.data.id)
   visible.value = true

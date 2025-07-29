@@ -90,6 +90,7 @@ const openFileByUrl = (item: any) => {
 
 // 收藏
 const showPopup = async (item?: any) => {
+  console.log('这是技术文章传入的path', item.path)
   const res = await addToFolder(
     'http://121.199.10.78:8001/api/v1/collections/items',
     'technical_paper',
@@ -100,7 +101,7 @@ const showPopup = async (item?: any) => {
   )
 
   item_id.value.push(res.data.id)
-  // console.log('这是收藏之后的id', res.data.id)
+  console.log('这是技术文章收藏之后的结果', res.data)
   visible.value = true
   setTimeout(() => {
     visible.value = false

@@ -1247,6 +1247,7 @@ const changeExpand = (index: any) => {
 }
 const value = ref('')
 const goProductDetail = (item: any) => {
+  console.log('跳转的pid是', item.pid)
   uni.navigateTo({ url: '/pages/chip-detail/index?id=' + item.pid })
 }
 onLoad((option) => {

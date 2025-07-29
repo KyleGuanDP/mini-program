@@ -176,8 +176,8 @@ const close = () => {
 }
 
 .cancel {
-  height: 40rpx;
-  width: 40rpx;
+  height: 32rpx;
+  width: 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;

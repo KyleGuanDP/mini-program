@@ -4,9 +4,13 @@
 
     <view class="modal">
       <view class="head">
-        <view class="cancel" @click="cancel">取消</view>
-        <view class="move">Move</view>
-        <view class="create" @click="activeCreateFolder">新建目录</view>
+        <view class="cancel" @click="goBack">
+          <image src="../../static/images/product/leftTo.png" mode="scaleToFill" />
+        </view>
+        <view class="move">移动</view>
+        <view class="create" @click="cancel">
+          <image src="../../static/images/product/cancle.png" mode="scaleToFill" />
+        </view>
       </view>
       <view class="route">
         <view
@@ -14,8 +18,9 @@
           v-for="(route, index) in routes"
           :key="index"
           @click="goToIndex(index)"
+          :class="{ active: route.id === routes.at(-1).id }"
         >
-          {{ route.name }} >
+          {{ route.name }} /
         </view>
       </view>
       <scroll-view scroll-y class="content">
@@ -41,7 +46,15 @@
           </view>
         </view>
       </scroll-view>
-      <view class="confirm" @click="handleMove()">移动到此处</view>
+      <view class="button-group">
+        <view class="confirm create" @click="activeCreateFolder">
+          <view class="create-image">
+            <image src="../../static/images/product/create.png" mode="scaleToFill" />
+          </view>
+          <view>新建文件夹</view>
+        </view>
+        <view class="confirm move" @click="handleMove()">移动到此处</view>
+      </view>
     </view>
   </view>
   <createFolder
@@ -55,16 +68,20 @@
 
 <script setup lang="ts">
 import { moveElements } from '@/utils/moveElements'
+import { moveFolders } from '@/utils/moveFolders'
 import { ref, onMounted } from 'vue'
 import { getFolder } from '@/utils/getFolders'
 import createFolder from './createFolder.vue'
 const emit = defineEmits<{
   (e: 'deactivateMove'): void
+  (e: 'getRouters', value: Array<{ name: string; id: string | null }>): void
 }>()
 
 const props = defineProps<{
   type: string
   selectedCollections: any
+  selectedFolders?: any
+  searchPage?: boolean
 }>()
 
 const routes = ref<{ name: string; id: string | null }[]>([{ name: '根目录', id: null }])
@@ -101,23 +118,29 @@ const move = async (
   type: string,
   selectedItems: any[],
   route: Ref<{ name: string; id: string | null }[]>,
+  selectedFolders: any[],
 ) => {
   const routeValue = route.value
   const lastRoute = routeValue.at(-1)
   let targetId = null
   if (lastRoute.id) targetId = lastRoute.id
+
   const res2 = await moveElements(type, selectedItems, targetId)
-  console.log(res2.statusCode)
+  console.log('this is move status log', res2.statusCode)
   if (res2.statusCode === 200) {
-    uni.showToast({ title: '收藏成功', icon: 'success' })
+    uni.showToast({ title: '移动成功', icon: 'success' })
+    emit('deactivateMove')
   } else {
-    uni.showToast({ title: '收藏失败', icon: 'error' })
+    uni.showToast({ title: '移动失败', icon: 'error' })
   }
+  setTimeout(() => {
+    emit('getRouters', routeValue)
+  }, 1000)
 }
 
-const handleMove = async () => {
-  await move(props.type, props.selectedCollections, routes)
-  emit('deactivateMove')
+const handleMove = () => {
+  console.log('这是传过来的type', props.type)
+  move(props.type, props.selectedCollections, routes, props.selectedFolders)
 }
 
 // active create
@@ -135,6 +158,15 @@ const createEmit = async () => {
   await getFolder(props.type, target, false, folders, items)
   activeCreate.value = false
 }
+
+// 返回
+const goBack = () => {
+  if (routes.value.length > 1) {
+    const pop = routes.value.pop()
+    const target = routes.value[routes.value.length - 1]
+    getFolder(props.type, target.id, false, folders, items)
+  }
+}
 onMounted(() => {
   routes.value = [{ name: '根目录', id: null }]
   loadFolder(null)
@@ -143,8 +175,8 @@ onMounted(() => {
 
 <style scoped>
 /* [class] {
-    border: 1rpx solid;
-  } */
+  border: 1rpx solid;
+} */
 .container {
   position: fixed;
   top: 0;
@@ -184,21 +216,45 @@ onMounted(() => {
   height: 50rpx;
   justify-content: space-between;
   font-weight: bold;
+  padding-top: 30rpx;
+}
+
+.cancel {
+  width: 18rpx;
+  height: 28rpx;
+}
+
+.create {
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .route {
-  width: 95%;
+  width: 98%;
   display: flex;
   flex-direction: row;
   font-family:
     PingFang SC,
     PingFang SC;
   font-weight: 400;
-  font-size: 30rpx;
-  color: #1d8aed;
+  font-size: 22rpx;
+
   text-align: left;
   font-style: normal;
   text-transform: none;
+  color: #979797;
+  padding-left: 10rpx;
+  padding-top: 10rpx;
+}
+
+.specific-route {
+  padding-top: 20rpx;
+  padding-left: 10rpx;
+}
+
+.specific-route.active {
+  color: #e65924;
+  padding-left: 10rpx;
 }
 
 .folder-name {
@@ -226,12 +282,27 @@ onMounted(() => {
   width: 100%;
   height: 100%;
 }
+.button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+}
+
+.create-image {
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
 
 .confirm {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 670rpx;
+  width: 335rpx;
   height: 64rpx;
   background: #ffffff;
   border-radius: 12rpx 12rpx 12rpx 12rpx;
@@ -245,5 +316,22 @@ onMounted(() => {
   font-style: normal;
   text-transform: none;
   margin-bottom: 30rpx;
+}
+.confirm.create {
+  border: 0;
+}
+
+.confirm.move {
+  background: #e65924;
+  border-radius: 16rpx 16rpx 16rpx 16rpx;
+  font-family:
+    PingFang SC,
+    PingFang SC;
+  font-weight: 400;
+  font-size: 28rpx;
+  color: #ffffff;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
 }
 </style>
