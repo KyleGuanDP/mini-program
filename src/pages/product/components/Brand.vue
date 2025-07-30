@@ -53,8 +53,11 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const brands = ['德州仪器-TI', 'ADI', 'ST', 'Infineon']
-const regions = ['中国', '美国', '日本', '德国', '欧洲', '中国台湾', '韩国']
+// const brands = ['德州仪器-TI', 'ADI', 'ST', 'Infineon']
+// const regions = ['中国', '美国', '日本', '德国', '欧洲', '中国台湾', '韩国']
+
+const brands = ref([])
+const regions = ref([])
 
 const selectedBrands = defineModel<string[]>('selectedBrands', {
   default: () => [],
@@ -90,6 +93,16 @@ const handleConfirm = () => {
 const onClickClose = () => {
   props.clickClose?.()
 }
+
+onMounted(() => {
+  const filterItems = inject<Ref<any>>('filterItems') as any
+  const data = filterItems.value
+  brands.value = data.country_agg
+  regions.value = data.manufacture_agg
+  // console.log('这是传进来了filterItems', data)
+  // console.log('这是传进来了brands', data.country_agg)
+  // console.log('这是传进来了regions', data.manufacture_agg)
+})
 </script>
 
 <style scoped>

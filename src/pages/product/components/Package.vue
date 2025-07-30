@@ -13,7 +13,7 @@
       <view class="side-bar" v-if="popupKey === 'package'">
         <SideBar
           @clearPackageRange="clearPackageRange"
-          :elements="packageTypes"
+          :elements="packageTypes.value"
           :selected="selectedSideKey"
           @select="handleSideSelect"
           v-model:selectedNormal="selectedNormal"
@@ -260,28 +260,30 @@ const emit = defineEmits<{
 
 const selectedSideKey = ref('')
 
-const packageTypes = [
-  'QFP',
-  'QFN',
-  'DFN',
-  'LGA',
-  'BGA',
-  'CSP',
-  'SOP',
-  'SM',
-  'SOD',
-  'SOT',
-  'DIP',
-  'TO',
-]
+// const packageTypes = [
+//   'QFP',
+//   'QFN',
+//   'DFN',
+//   'LGA',
+//   'BGA',
+//   'CSP',
+//   'SOP',
+//   'SM',
+//   'SOD',
+//   'SOT',
+//   'DIP',
+//   'TO',
+// ]
 const parameterTypes = ['应用场景', '拓扑架构', '参数指标', '特殊功能', '保护功能']
+
+const packageTypes = ref<any>([])
 
 const { popupKey } = props
 
 watch(
   () => props.popupKey,
   (newKey) => {
-    if (newKey === 'package' && packageTypes.length) {
+    if (newKey === 'package' && packageTypes.value.length) {
       selectedSideKey.value = packageTypes[0]
     } else if (newKey === 'param' && parameterTypes.length) {
       selectedSideKey.value = parameterTypes[0]
@@ -354,7 +356,7 @@ const clearAllFilters = () => {
   otp.value = []
 
   // 可选：重置左侧菜单
-  if (popupKey === 'package' && packageTypes.length) {
+  if (popupKey === 'package' && packageTypes.value.length) {
     selectedSideKey.value = packageTypes[0]
   } else if (popupKey === 'param' && parameterTypes.length) {
     selectedSideKey.value = parameterTypes[0]
@@ -364,7 +366,7 @@ const clearAllFilters = () => {
 // ✅ 重置
 const handleReset = () => {
   clearAllFilters()
-  if (props.popupKey === 'package' && packageTypes.length) {
+  if (props.popupKey === 'package' && packageTypes.value.length) {
     selectedSideKey.value = packageTypes[0]
   } else if (props.popupKey === 'param' && parameterTypes.length) {
     selectedSideKey.value = parameterTypes[0]
@@ -377,6 +379,25 @@ const handleConfirm = () => {
   selectedArea.value = []
   selectedPin.value = []
 }
+
+// dynamic get package filter
+const dPackageItems = (package_tree: any) => {
+  const resultArray = []
+  for (let i = 0; i < package_tree.length - 1; i++) {
+    resultArray.push(package_tree[i].name)
+  }
+  return resultArray
+}
+
+onMounted(() => {
+  const filterItems = inject<Ref<any>>('filterItems') as any
+  const data = filterItems.value
+  const tree = data.package_tree
+  console.log('这是传入的封装树', tree)
+  console.log('这是处理后的树', dPackageItems(tree))
+  packageTypes.value = dPackageItems(tree)
+  console.log('这是封装的值', packageTypes.value)
+})
 </script>
 
 <style scoped>

@@ -25,6 +25,7 @@
 </template>
 
 <script lang="ts" setup>
+import { getFilterItems } from '@/utils/getCategoryFilterItems'
 import { filterEmptyValues } from '@/utils'
 import { ref } from 'vue'
 import Bottom from './components/Bottom.vue'
@@ -33,20 +34,32 @@ import Mid from './components/Mid.vue'
 defineOptions({
   name: 'product',
 })
+
 const keyword = ref('')
 const bottomRef = ref(null)
+const filterItems = ref<any>()
+
+provide('filterItems', filterItems)
+
 const goSearch = (other) => {
   console.log('other', other)
   const data = filterEmptyValues(other)
   console.log('this is data', data)
   bottomRef.value?.goSearch(data)
 }
+
+// 获取动态筛选项参数
 const classfiy = ref('')
-onLoad((option) => {
+onLoad(async (option) => {
   classfiy.value = option.name
+  const filterItemsIn = await getFilterItems(option)
+  console.log('这是注入前的', filterItemsIn)
+  filterItems.value = filterItemsIn
+  console.log('这是注入后的', filterItems.value)
   setTimeout(() => {
     bottomRef.value?.goSearch()
   }, 200)
+
   // bottomRef.value?.goSearch(keyword.value)
 })
 </script>
